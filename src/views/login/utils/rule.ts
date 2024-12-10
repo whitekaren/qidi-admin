@@ -1,5 +1,6 @@
 import { reactive } from "vue";
 import type { FormRules } from "element-plus";
+import { useUserStoreHook } from "@/store/modules/user";
 
 /** 密码正则（密码格式应为8-18位数字、字母、符号的任意两种组合） */
 export const REGEXP_PWD =
@@ -16,6 +17,20 @@ const loginRules = reactive(<FormRules>{
           callback(
             new Error("密码格式应为8-18位数字、字母、符号的任意两种组合")
           );
+        } else {
+          callback();
+        }
+      },
+      trigger: "blur"
+    }
+  ],
+  verifyCode: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error("请输入验证码"));
+        } else if (useUserStoreHook().verifyCode !== value) {
+          callback(new Error("请输入正确的验证码"));
         } else {
           callback();
         }
