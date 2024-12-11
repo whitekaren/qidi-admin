@@ -50,6 +50,13 @@ const {
   margin-top: 10px;
 }
 
+:deep(.el-input) {
+  margin-top: 10px;
+}
+:deep(.el-button) {
+  margin-top: 10px;
+  margin-right: 10px;
+}
 :deep(.el-alert__title) {
   font-size: 15px;
 }

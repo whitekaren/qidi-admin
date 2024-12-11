@@ -56,6 +56,21 @@ const tableData = [
   }
 ];
 
+const options = [
+  {
+    value: "nick_name",
+    label: "昵称"
+  },
+  {
+    value: "id",
+    label: "ID"
+  },
+  {
+    value: "email",
+    label: "邮箱"
+  }
+];
+
 const tableDataMore = clone(tableData, true).map(item =>
   Object.assign(item, {
     state: "California",
@@ -98,6 +113,7 @@ const tableDataEdit = clone(tableData, true).map((item, index) => {
 
 export {
   tableData,
+  options,
   tableDataDrag,
   tableDataMore,
   tableDataEdit,

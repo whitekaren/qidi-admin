@@ -3,15 +3,41 @@ import type {
   AdaptiveConfig,
   PaginationProps
 } from "@pureadmin/table";
-import { tableData } from "./data";
 import { ref, onMounted, reactive } from "vue";
 import { clone, delay } from "@pureadmin/utils";
+import { message } from "@/utils/message";
 
 import { getUserList } from "@/api/list";
 
 export function useColumns() {
   const dataList = ref([]);
   const loading = ref(true);
+  const searchType = ref("email"); //搜索类型
+  const search = ref("");
+
+  const handleEdit = (index: number, row) => {
+    message(`您修改了第 ${index} 行，数据为：${JSON.stringify(row)}`, {
+      type: "success"
+    });
+  };
+
+  const handleDelete = (index: number, row) => {
+    message(`您删除了第 ${index} 行，数据为：${JSON.stringify(row)}`);
+  };
+  const options = [
+    {
+      value: "email",
+      label: "邮箱"
+    },
+    {
+      value: "nick_name",
+      label: "昵称"
+    },
+    {
+      value: "id",
+      label: "ID"
+    }
+  ];
   const columns: TableColumnList = [
     {
       label: "id",
@@ -44,14 +70,56 @@ export function useColumns() {
     {
       label: "在线时间",
       prop: "online_at"
+    },
+    {
+      align: "right",
+      // 自定义表头，tsx用法
+      headerRenderer: () => (
+        <>
+          <el-select v-model={searchType.value} size="small">
+            {options.map(item => {
+              return (
+                <el-option
+                  key={item.value}
+                  label={item.label}
+                  value={item.value}
+                />
+              );
+            })}
+          </el-select>
+          <el-input
+            v-model={search.value}
+            size="small"
+            clearable
+            placeholder="请输入关键词"
+          />
+          <el-button size="small" onClick={() => onCurrentChange(1)}>
+            Search
+          </el-button>
+        </>
+      ),
+      cellRenderer: ({ index, row }) => (
+        <>
+          <el-button size="small" onClick={() => handleEdit(index + 1, row)}>
+            Edit
+          </el-button>
+          <el-button
+            size="small"
+            type="danger"
+            onClick={() => handleDelete(index + 1, row)}
+          >
+            Delete
+          </el-button>
+        </>
+      )
     }
   ];
 
   /** 分页配置 */
   const pagination = reactive<PaginationProps>({
-    pageSize: 15,
+    pageSize: 10,
     currentPage: 1,
-    pageSizes: [15, 20, 30, 40, 50, 100],
+    pageSizes: [10, 20, 30, 40, 50, 100],
     total: 0,
     align: "right",
     background: true,
@@ -95,21 +163,44 @@ export function useColumns() {
     delay(600).then(() => {
       const newList = [];
       dataList.value = [];
-      console.log(val);
-      getUserList({
+
+      interface DynamicParams {
+        limit: number;
+        page: number;
+        [key: string]: any; // 允许任意数量的动态属性
+      }
+      const dynamicParams: DynamicParams = {
         limit: pagination.pageSize,
         page: pagination.currentPage
-      })
+      };
+      if (searchType.value === "nick_name") {
+        dynamicParams["nick_name"] = search.value;
+      } else if (searchType.value === "id") {
+        dynamicParams["id"] = search.value;
+      } else if (searchType.value === "email") {
+        dynamicParams["email"] = search.value;
+      }
+      getUserList(dynamicParams)
         .then(data => {
-          console.log(data.data.list);
-          Array.from({ length: 30 }).forEach(() => {
+          if (search.value) {
             newList.push(clone(data.data.list, true));
-          });
-          newList.flat(Infinity).forEach((item, index) => {
-            dataList.value.push({ id: index, ...item });
-          });
-          pagination.total = data.data.count;
-          loading.value = false;
+            newList.flat(Infinity).forEach((item, index) => {
+              dataList.value.push({ id: index, ...item });
+            });
+            pagination.total = data.data.list.length;
+            loading.value = false;
+          } else {
+            Array.from({
+              length: Math.ceil(data.data.count / pagination.pageSize)
+            }).forEach(() => {
+              newList.push(clone(data.data.list, true));
+            });
+            newList.flat(Infinity).forEach((item, index) => {
+              dataList.value.push({ id: index, ...item });
+            });
+            pagination.total = data.data.count;
+            loading.value = false;
+          }
         })
         .catch(error => {
           console.log(error);
@@ -125,21 +216,46 @@ export function useColumns() {
     delay(600).then(() => {
       const newList = [];
       dataList.value = [];
-      console.log(val);
-      getUserList({
+      interface DynamicParams {
+        limit: number;
+        page: number;
+        [key: string]: any; // 允许任意数量的动态属性
+      }
+      const dynamicParams: DynamicParams = {
         limit: pagination.pageSize,
         page: pagination.currentPage
-      })
+      };
+      if (searchType.value === "nick_name") {
+        dynamicParams["nick_name"] = search.value;
+      } else if (searchType.value === "id") {
+        dynamicParams["id"] = search.value;
+      } else if (searchType.value === "email") {
+        dynamicParams["email"] = search.value;
+      }
+      getUserList(dynamicParams)
         .then(data => {
-          console.log(data.data.list);
-          Array.from({ length: 30 }).forEach(() => {
+          if (search.value) {
+            console.log(data.data.list);
             newList.push(clone(data.data.list, true));
-          });
-          newList.flat(Infinity).forEach((item, index) => {
-            dataList.value.push({ id: index, ...item });
-          });
-          pagination.total = data.data.count;
-          loading.value = false;
+            newList.flat(Infinity).forEach((item, index) => {
+              dataList.value.push({ id: index, ...item });
+            });
+            pagination.total = data.data.list.length;
+            loading.value = false;
+          } else {
+            console.log(data.data.list);
+            console.log(Math.ceil(data.data.count / pagination.pageSize));
+            Array.from({
+              length: Math.ceil(data.data.count / pagination.pageSize)
+            }).forEach(() => {
+              newList.push(clone(data.data.list, true));
+            });
+            newList.flat(Infinity).forEach((item, index) => {
+              dataList.value.push({ id: index, ...item });
+            });
+            pagination.total = data.data.count;
+            loading.value = false;
+          }
         })
         .catch(error => {
           console.log(error);
@@ -152,21 +268,43 @@ export function useColumns() {
   onMounted(() => {
     delay(600).then(() => {
       const newList = [];
-      console.log(tableData);
-      getUserList({
-        limit: 20,
-        page: 1
-      })
+      interface DynamicParams {
+        limit: number;
+        page: number;
+        [key: string]: any; // 允许任意数量的动态属性
+      }
+      const dynamicParams: DynamicParams = {
+        limit: pagination.pageSize,
+        page: pagination.currentPage
+      };
+      if (searchType.value === "nick_name") {
+        dynamicParams["nick_name"] = search.value;
+      } else if (searchType.value === "id") {
+        dynamicParams["id"] = search.value;
+      } else if (searchType.value === "email") {
+        dynamicParams["email"] = search.value;
+      }
+      getUserList(dynamicParams)
         .then(data => {
-          console.log(data.data.list);
-          Array.from({ length: 6 }).forEach(() => {
+          if (search.value) {
             newList.push(clone(data.data.list, true));
-          });
-          newList.flat(Infinity).forEach((item, index) => {
-            dataList.value.push({ id: index, ...item });
-          });
-          pagination.total = data.data.count;
-          loading.value = false;
+            newList.flat(Infinity).forEach((item, index) => {
+              dataList.value.push({ id: index, ...item });
+            });
+            pagination.total = data.data.list.length;
+            loading.value = false;
+          } else {
+            Array.from({
+              length: Math.ceil(data.data.count / pagination.pageSize)
+            }).forEach(() => {
+              newList.push(clone(data.data.list, true));
+            });
+            newList.flat(Infinity).forEach((item, index) => {
+              dataList.value.push({ id: index, ...item });
+            });
+            pagination.total = data.data.count;
+            loading.value = false;
+          }
         })
         .catch(error => {
           console.log(error);
