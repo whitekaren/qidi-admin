@@ -9,6 +9,7 @@ import { message } from "@/utils/message";
 
 import { getUserList } from "@/api/list";
 import { CustomMouseMenu } from "@howdyjs/mouse-menu";
+// import { addDrawer } from "@/components/ReDrawer/index";
 
 export function useColumns() {
   const dataList = ref([]);
@@ -61,7 +62,7 @@ export function useColumns() {
   const menuOptions = {
     menuList: [
       {
-        label: ({ id }) => `ID：${id}`,
+        label: ({ id }) => `ID:${id}`,
         disabled: true
       },
       {

@@ -1,6 +1,6 @@
 export default {
   path: "/list",
-  redirect: "/list/403",
+  redirect: "/list/userlist",
   meta: {
     icon: "ri:table-line",
     // showLink: false,
@@ -11,7 +11,7 @@ export default {
     {
       path: "/list/userlist",
       name: "用户列表",
-      component: () => import("@/views/list/index.vue"),
+      component: () => import("@/views/list/userlist/index.vue"),
       meta: {
         icon: "memory:account",
         title: "用户列表"
@@ -20,7 +20,7 @@ export default {
     {
       path: "/list/devicelist",
       name: "设备列表",
-      component: () => import("@/views/error/404.vue"),
+      component: () => import("@/views/list/devicelist/index.vue"),
       meta: {
         icon: "eos-icons:3d-print",
         title: "设备列表"
