@@ -12,7 +12,8 @@ const {
   loadingConfig,
   adaptiveConfig,
   onSizeChange,
-  onCurrentChange
+  onCurrentChange,
+  showMouseMenu
 } = useColumns();
 </script>
 <template>
@@ -27,6 +28,10 @@ const {
       showOverflowTooltip
       :loading="loading"
       :loading-config="loadingConfig"
+      :header-cell-style="{
+        background: 'var(--el-fill-color-light)',
+        color: 'var(--el-text-color-primary)'
+      }"
       :data="
         dataList.slice(
           (pagination.currentPage - 1) * pagination.pageSize,
@@ -35,6 +40,7 @@ const {
       "
       :columns="columns"
       :pagination="pagination"
+      @row-contextmenu="showMouseMenu"
       @page-size-change="onSizeChange"
       @page-current-change="onCurrentChange"
     />
@@ -51,14 +57,18 @@ const {
 }
 
 :deep(.el-input) {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 :deep(.el-button) {
-  margin-top: 10px;
-  margin-right: 10px;
+  margin-top: 5px;
 }
 :deep(.el-alert__title) {
   font-size: 15px;
+}
+:deep(.el-tag) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 :deep(.el-tabs__nav-next),

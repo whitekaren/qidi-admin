@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@howdyjs/mouse-menu':
+        specifier: ^2.1.6
+        version: 2.1.6(vue@3.4.38(typescript@5.5.4))
       '@pureadmin/descriptions':
         specifier: ^1.2.1
         version: 1.2.1(echarts@5.5.1)(element-plus@2.8.0(vue@3.4.38(typescript@5.5.4)))(typescript@5.5.4)
@@ -833,6 +836,11 @@ packages:
 
   '@floating-ui/utils@0.2.7':
     resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==}
+
+  '@howdyjs/mouse-menu@2.1.6':
+    resolution: {integrity: sha512-19TjOfX9p9KUOMVlThkSTAA4KfqHvrEFGTCwFVPREOjpBommFSnaXmf7mHGdoahJsGdBMAijGFoe68E/MpmnNw==}
+    peerDependencies:
+      vue: '>=3.0.0'
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
@@ -4429,6 +4437,10 @@ snapshots:
       '@floating-ui/utils': 0.2.7
 
   '@floating-ui/utils@0.2.7': {}
+
+  '@howdyjs/mouse-menu@2.1.6(vue@3.4.38(typescript@5.5.4))':
+    dependencies:
+      vue: 3.4.38(typescript@5.5.4)
 
   '@humanwhocodes/module-importer@1.0.1': {}
 

@@ -8,22 +8,19 @@ import { clone, delay } from "@pureadmin/utils";
 import { message } from "@/utils/message";
 
 import { getUserList } from "@/api/list";
+import { CustomMouseMenu } from "@howdyjs/mouse-menu";
 
 export function useColumns() {
   const dataList = ref([]);
   const loading = ref(true);
   const searchType = ref("email"); //搜索类型
   const search = ref("");
+  // const handleEdit = (index: number, row) => {
+  //   message(`您修改了第 ${index} 行，数据为：${JSON.stringify(row)}`, {
+  //     type: "success"
+  //   });
+  // };
 
-  const handleEdit = (index: number, row) => {
-    message(`您修改了第 ${index} 行，数据为：${JSON.stringify(row)}`, {
-      type: "success"
-    });
-  };
-
-  const handleDelete = (index: number, row) => {
-    message(`您删除了第 ${index} 行，数据为：${JSON.stringify(row)}`);
-  };
   const options = [
     {
       value: "email",
@@ -38,19 +35,84 @@ export function useColumns() {
       label: "ID"
     }
   ];
-  const columns: TableColumnList = [
+  const loginoptions = [
     {
-      label: "id",
-      prop: "id"
+      value: "email",
+      label: "邮箱"
     },
+    {
+      value: "admin",
+      label: "后台"
+    },
+    {
+      value: "apple",
+      label: "苹果"
+    },
+    {
+      value: "qq",
+      label: "QQ"
+    },
+    {
+      value: "weixin",
+      label: "微信"
+    }
+  ];
+
+  const menuOptions = {
+    menuList: [
+      {
+        label: ({ id }) => `ID：${id}`,
+        disabled: true
+      },
+      {
+        label: "修改",
+        tips: "Edit",
+        fn: row =>
+          message(
+            `您修改了第 ${
+              dataList.value.findIndex(v => v.id === row.id) + 1
+            } 行，数据为：${JSON.stringify(row)}`,
+            {
+              type: "success"
+            }
+          )
+      }
+    ]
+  };
+
+  function showMouseMenu(row, column, event) {
+    event.preventDefault();
+    const { x, y } = event;
+    const ctx = CustomMouseMenu({
+      el: event.currentTarget,
+      params: row,
+      // 菜单容器的CSS设置
+      menuWrapperCss: {
+        background: "var(--el-bg-color)"
+      },
+      menuItemCss: {
+        labelColor: "var(--el-text-color)",
+        hoverLabelColor: "var(--el-color-primary)",
+        hoverTipsColor: "var(--el-color-primary)"
+      },
+      ...menuOptions
+    });
+    ctx.show(x, y);
+  }
+
+  const columns: TableColumnList = [
+    // {
+    //   label: "id",
+    //   prop: "id"
+    // },
     {
       label: "邮箱",
       prop: "email"
     },
-    {
-      label: "登录方式",
-      prop: "type"
-    },
+    // {
+    //   label: "登录方式",
+    //   prop: "type"
+    // },
     {
       label: "openid",
       prop: "openid"
@@ -98,28 +160,30 @@ export function useColumns() {
           </el-button>
         </>
       ),
-      cellRenderer: ({ index, row }) => (
+      cellRenderer: ({ row }) => (
         <>
-          <el-button size="small" onClick={() => handleEdit(index + 1, row)}>
-            Edit
-          </el-button>
-          <el-button
-            size="small"
-            type="danger"
-            onClick={() => handleDelete(index + 1, row)}
-          >
-            Delete
-          </el-button>
+          <el-tag type="primary">
+            {loginoptions.filter(opt => opt.value == row.type)[0]?.label}
+          </el-tag>
         </>
+        // <el-button
+        //   class="reset-margin"
+        //   // size="small"
+        //   link
+        //   type="primary"
+        //   onClick={() => handleEdit(index + 1, row)}
+        // >
+        //   Edit
+        // </el-button>
       )
     }
   ];
 
   /** 分页配置 */
   const pagination = reactive<PaginationProps>({
-    pageSize: 10,
+    pageSize: 15,
     currentPage: 1,
-    pageSizes: [10, 20, 30, 40, 50, 100],
+    pageSizes: [15, 20, 30, 40, 50, 100],
     total: 0,
     align: "right",
     background: true,
@@ -324,6 +388,7 @@ export function useColumns() {
     loadingConfig,
     adaptiveConfig,
     onSizeChange,
-    onCurrentChange
+    onCurrentChange,
+    showMouseMenu
   };
 }
