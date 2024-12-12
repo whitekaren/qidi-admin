@@ -5,59 +5,54 @@ import type {
 } from "@pureadmin/table";
 import { ref, onMounted, reactive } from "vue";
 import { clone, delay } from "@pureadmin/utils";
-import { message } from "@/utils/message";
+// import { message } from "@/utils/message";
 
-import { getUserList } from "@/api/list";
+import { getDeviceList } from "@/api/list";
 import { CustomMouseMenu } from "@howdyjs/mouse-menu";
 // import { addDrawer } from "@/components/ReDrawer/index";
 
 export function useColumns() {
   const dataList = ref([]);
   const loading = ref(true);
-  const searchType = ref("email"); //搜索类型
+  const searchType = ref("mac_address"); //搜索类型
   const search = ref("");
-  // const handleEdit = (index: number, row) => {
-  //   message(`您修改了第 ${index} 行，数据为：${JSON.stringify(row)}`, {
-  //     type: "success"
-  //   });
-  // };
 
   const options = [
     {
-      value: "email",
-      label: "邮箱"
+      value: "mac_address",
+      label: "MAC地址"
     },
     {
-      value: "nick_name",
-      label: "昵称"
+      value: "local_ip",
+      label: "IP地址"
     },
     {
-      value: "id",
-      label: "ID"
+      value: "sn",
+      label: "序列号"
     }
   ];
-  const loginoptions = [
-    {
-      value: "email",
-      label: "邮箱"
-    },
-    {
-      value: "admin",
-      label: "后台"
-    },
-    {
-      value: "apple",
-      label: "苹果"
-    },
-    {
-      value: "qq",
-      label: "QQ"
-    },
-    {
-      value: "weixin",
-      label: "微信"
-    }
-  ];
+  // const loginoptions = [
+  //   {
+  //     value: "email",
+  //     label: "邮箱"
+  //   },
+  //   {
+  //     value: "admin",
+  //     label: "后台"
+  //   },
+  //   {
+  //     value: "apple",
+  //     label: "苹果"
+  //   },
+  //   {
+  //     value: "qq",
+  //     label: "QQ"
+  //   },
+  //   {
+  //     value: "weixin",
+  //     label: "微信"
+  //   }
+  // ];
 
   const menuOptions = {
     menuList: [
@@ -66,17 +61,30 @@ export function useColumns() {
         disabled: true
       },
       {
-        label: "修改",
-        tips: "Edit",
+        label: ({ user_id }) => `user:${user_id}`,
+        disabled: true
+      },
+      {
+        label: ({ url }) => `code:${url.split(".")[0]}`,
+        disabled: true
+      },
+      {
+        label: "新连接",
+        tips: "server",
         fn: row =>
-          message(
-            `您修改了第 ${
-              dataList.value.findIndex(v => v.id === row.id) + 1
-            } 行，数据为：${JSON.stringify(row)}`,
-            {
-              type: "success"
-            }
+          window.open(
+            "http://fluidd_" +
+              row.server +
+              ".qidi3dprinter.com/#/?url=" +
+              row.url.split(".")[0] +
+              "&theme=dark",
+            "_blank"
           )
+      },
+      {
+        label: "旧连接",
+        tips: "frp",
+        fn: row => window.open("http://" + row.url, "_blank")
       }
     ]
   };
@@ -102,38 +110,34 @@ export function useColumns() {
   }
 
   const columns: TableColumnList = [
-    // {
-    //   label: "id",
-    //   prop: "id"
-    // },
     {
-      label: "邮箱",
-      prop: "email"
+      label: "设备名",
+      prop: "device_name"
+    },
+    {
+      label: "机型",
+      prop: "machine_type"
+    },
+    {
+      label: "序列号",
+      prop: "sn"
+    },
+    {
+      label: "MAC地址",
+      prop: "mac_address"
+    },
+    {
+      label: "本地IP",
+      prop: "local_ip"
+    },
+    {
+      label: "服务器",
+      prop: "server"
     },
     // {
-    //   label: "登录方式",
-    //   prop: "type"
+    //   label: "frp路径",
+    //   prop: "url"
     // },
-    {
-      label: "openid",
-      prop: "openid"
-    },
-    {
-      label: "绑定设备数",
-      prop: "device_count"
-    },
-    {
-      label: "用户名",
-      prop: "nick_name"
-    },
-    {
-      label: "创建时间",
-      prop: "created_at"
-    },
-    {
-      label: "在线时间",
-      prop: "online_at"
-    },
     {
       align: "right",
       // 自定义表头，tsx用法
@@ -157,25 +161,16 @@ export function useColumns() {
             placeholder="请输入关键词"
           />
           <el-button size="small" onClick={() => onCurrentChange(1)}>
-            Search
+            搜索
           </el-button>
         </>
       ),
       cellRenderer: ({ row }) => (
         <>
-          <el-tag type="primary">
-            {loginoptions.filter(opt => opt.value == row.type)[0]?.label}
+          <el-tag type={row.user_id ? "success" : "danger"}>
+            {row.user_id ? "已绑定" : "未绑定"}
           </el-tag>
         </>
-        // <el-button
-        //   class="reset-margin"
-        //   // size="small"
-        //   link
-        //   type="primary"
-        //   onClick={() => handleEdit(index + 1, row)}
-        // >
-        //   Edit
-        // </el-button>
       )
     }
   ];
@@ -238,14 +233,14 @@ export function useColumns() {
         limit: pagination.pageSize,
         page: pagination.currentPage
       };
-      if (searchType.value === "nick_name") {
-        dynamicParams["nick_name"] = search.value;
-      } else if (searchType.value === "id") {
-        dynamicParams["id"] = search.value;
-      } else if (searchType.value === "email") {
-        dynamicParams["email"] = search.value;
+      if (searchType.value === "mac_address" && search.value != "") {
+        dynamicParams["mac_address"] = search.value;
+      } else if (searchType.value === "sn" && search.value != "") {
+        dynamicParams["sn"] = search.value;
+      } else if (searchType.value === "local_ip" && search.value != "") {
+        dynamicParams["local_ip"] = search.value;
       }
-      getUserList(dynamicParams)
+      getDeviceList(dynamicParams)
         .then(data => {
           if (search.value) {
             newList.push(clone(data.data.list, true));
@@ -290,14 +285,14 @@ export function useColumns() {
         limit: pagination.pageSize,
         page: pagination.currentPage
       };
-      if (searchType.value === "nick_name") {
-        dynamicParams["nick_name"] = search.value;
-      } else if (searchType.value === "id") {
-        dynamicParams["id"] = search.value;
-      } else if (searchType.value === "email") {
-        dynamicParams["email"] = search.value;
+      if (searchType.value === "mac_address" && search.value != "") {
+        dynamicParams["mac_address"] = search.value;
+      } else if (searchType.value === "sn" && search.value != "") {
+        dynamicParams["sn"] = search.value;
+      } else if (searchType.value === "local_ip" && search.value != "") {
+        dynamicParams["local_ip"] = search.value;
       }
-      getUserList(dynamicParams)
+      getDeviceList(dynamicParams)
         .then(data => {
           if (search.value) {
             console.log(data.data.list);
@@ -342,14 +337,14 @@ export function useColumns() {
         limit: pagination.pageSize,
         page: pagination.currentPage
       };
-      if (searchType.value === "nick_name") {
-        dynamicParams["nick_name"] = search.value;
-      } else if (searchType.value === "id") {
-        dynamicParams["id"] = search.value;
-      } else if (searchType.value === "email") {
-        dynamicParams["email"] = search.value;
+      if (searchType.value === "mac_address" && search.value != "") {
+        dynamicParams["mac_address"] = search.value;
+      } else if (searchType.value === "sn" && search.value != "") {
+        dynamicParams["sn"] = search.value;
+      } else if (searchType.value === "local_ip" && search.value != "") {
+        dynamicParams["local_ip"] = search.value;
       }
-      getUserList(dynamicParams)
+      getDeviceList(dynamicParams)
         .then(data => {
           if (search.value) {
             newList.push(clone(data.data.list, true));

@@ -39,23 +39,28 @@ export function useColumns() {
   const loginoptions = [
     {
       value: "email",
-      label: "邮箱"
+      label: "邮箱",
+      type: "warning"
     },
     {
       value: "admin",
-      label: "后台"
+      label: "后台",
+      type: "danger"
     },
     {
       value: "apple",
-      label: "苹果"
+      label: "苹果",
+      type: "info"
     },
     {
       value: "qq",
-      label: "QQ"
+      label: "QQ",
+      type: "primary"
     },
     {
       value: "weixin",
-      label: "微信"
+      label: "微信",
+      type: "success"
     }
   ];
 
@@ -157,13 +162,15 @@ export function useColumns() {
             placeholder="请输入关键词"
           />
           <el-button size="small" onClick={() => onCurrentChange(1)}>
-            Search
+            搜索
           </el-button>
         </>
       ),
       cellRenderer: ({ row }) => (
         <>
-          <el-tag type="primary">
+          <el-tag
+            type={loginoptions.filter(opt => opt.value == row.type)[0]?.type}
+          >
             {loginoptions.filter(opt => opt.value == row.type)[0]?.label}
           </el-tag>
         </>
