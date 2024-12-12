@@ -5,9 +5,9 @@ import type {
 } from "@pureadmin/table";
 import { ref, onMounted, reactive } from "vue";
 import { clone, delay } from "@pureadmin/utils";
-// import { message } from "@/utils/message";
+import { message } from "@/utils/message";
 
-import { getDeviceList } from "@/api/list";
+import { getDeviceList, unbinddevice } from "@/api/list";
 import { CustomMouseMenu } from "@howdyjs/mouse-menu";
 // import { addDrawer } from "@/components/ReDrawer/index";
 
@@ -62,11 +62,31 @@ export function useColumns() {
       },
       {
         label: ({ user_id }) => `user:${user_id}`,
-        disabled: true
+        disabled: true,
+        hidden: row => {
+          return row.user_id == null;
+        }
       },
       {
         label: ({ url }) => `code:${url.split(".")[0]}`,
-        disabled: true
+        disabled: true,
+        hidden: row => {
+          return row.user_id == null;
+        }
+      },
+      {
+        label: "解绑",
+        tips: "unbind",
+        fn: row =>
+          unbinddevice({ device_id: row.id }).then(response => {
+            message(`${response.message}`, {
+              type: response.message == "设备解绑成功" ? "success" : "error"
+            });
+            onCurrentChange(pagination.currentPage);
+          }),
+        hidden: row => {
+          return row.user_id == null;
+        }
       },
       {
         label: "新连接",
@@ -79,12 +99,18 @@ export function useColumns() {
               row.url.split(".")[0] +
               "&theme=dark",
             "_blank"
-          )
+          ),
+        hidden: row => {
+          return row.user_id == null;
+        }
       },
       {
         label: "旧连接",
         tips: "frp",
-        fn: row => window.open("http://" + row.url, "_blank")
+        fn: row => window.open("http://" + row.url, "_blank"),
+        hidden: row => {
+          return row.user_id == null;
+        }
       }
     ]
   };

@@ -54,6 +54,11 @@ export type DeviceDataResult = {
   count: number;
 };
 
+export type UnbindResult = {
+  status: number;
+  message: string;
+};
+
 export type DeviceList = {
   /** id */
   id: string;
@@ -100,4 +105,9 @@ export const getDeviceList = (params?: object) => {
     .then(response => {
       return response; // 返回处理后的数据
     });
+};
+export const unbinddevice = (data?: object) => {
+  return http.request<UnbindResult>("post", "/qidi/admin/unBindDevice", {
+    data
+  });
 };
