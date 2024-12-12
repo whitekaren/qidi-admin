@@ -7,20 +7,18 @@ import { ref, onMounted, reactive } from "vue";
 import { clone, delay } from "@pureadmin/utils";
 import { message } from "@/utils/message";
 
-import { getUserList } from "@/api/list";
+import { getUserList, editUser } from "@/api/list";
 import { CustomMouseMenu } from "@howdyjs/mouse-menu";
-// import { addDrawer } from "@/components/ReDrawer/index";
+import { addDrawer } from "@/components/ReDrawer/index";
 
 export function useColumns() {
   const dataList = ref([]);
   const loading = ref(true);
   const searchType = ref("email"); //搜索类型
   const search = ref("");
-  // const handleEdit = (index: number, row) => {
-  //   message(`您修改了第 ${index} 行，数据为：${JSON.stringify(row)}`, {
-  //     type: "success"
-  //   });
-  // };
+  const email = ref("");
+  const password = ref("");
+  const nick_name = ref("");
 
   const options = [
     {
@@ -71,20 +69,63 @@ export function useColumns() {
         disabled: true
       },
       {
-        label: "修改",
-        tips: "Edit",
-        fn: row =>
-          message(
-            `您修改了第 ${
-              dataList.value.findIndex(v => v.id === row.id) + 1
-            } 行，数据为：${JSON.stringify(row)}`,
-            {
-              type: "success"
-            }
-          )
+        label: "添加账号",
+        tips: "Add",
+        fn: _row => {
+          onBaseClick();
+          // console.log(row.id);
+        }
       }
     ]
   };
+  function onBaseClick() {
+    addDrawer({
+      title: "基础用法",
+      closeCallBack: ({ options, index, args }) => {
+        console.log(options, index, args);
+        if (args?.command === "sure") {
+          editUser({
+            email: email.value,
+            password: password.value,
+            nick_name: nick_name.value
+          }).then(response => {
+            message(`${response.message}`, {
+              type: response.message == "新增成功" ? "success" : "error"
+            });
+            onCurrentChange(pagination.currentPage);
+          });
+        }
+        email.value = "";
+        password.value = "";
+        nick_name.value = "";
+      },
+      contentRenderer: () => (
+        <>
+          邮箱:
+          <el-input
+            v-model={email.value}
+            size="middle"
+            clearable
+            placeholder="请输入邮箱"
+          />
+          密码:
+          <el-input
+            v-model={password.value}
+            size="middle"
+            clearable
+            placeholder="请输入密码"
+          />
+          昵称:
+          <el-input
+            v-model={nick_name.value}
+            size="middle"
+            clearable
+            placeholder="请输入昵称"
+          />
+        </>
+      )
+    });
+  }
 
   function showMouseMenu(row, column, event) {
     event.preventDefault();
@@ -161,6 +202,12 @@ export function useColumns() {
             clearable
             placeholder="请输入关键词"
           />
+          <el-button
+            size="small"
+            onClick={() => onCurrentChange(pagination.currentPage)}
+          >
+            刷新
+          </el-button>
           <el-button size="small" onClick={() => onCurrentChange(1)}>
             搜索
           </el-button>

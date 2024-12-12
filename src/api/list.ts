@@ -111,3 +111,8 @@ export const unbinddevice = (data?: object) => {
     data
   });
 };
+export const editUser = (data?: object) => {
+  return http.request<UnbindResult>("post", "/qidi/admin/editUser", {
+    data
+  });
+};

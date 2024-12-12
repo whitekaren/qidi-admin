@@ -115,6 +115,14 @@ export function useColumns() {
     ]
   };
 
+  function counttimeDifference(row) {
+    const lastUpdateTime = new Date(row.updated_at);
+    const currentTime = new Date();
+    const timeDifference =
+      Math.abs(currentTime.getTime() - lastUpdateTime.getTime()) / 1000;
+    return timeDifference;
+  }
+
   function showMouseMenu(row, column, event) {
     event.preventDefault();
     const { x, y } = event;
@@ -165,6 +173,19 @@ export function useColumns() {
     //   prop: "url"
     // },
     {
+      label: "状态",
+      prop: "device_status",
+      cellRenderer: ({ row }) => (
+        <>
+          {counttimeDifference(row) >= 60 || row.device_status === null ? (
+            <el-tag type="danger">offline</el-tag>
+          ) : (
+            <el-tag type="success">{row.device_status}</el-tag>
+          )}
+        </>
+      )
+    },
+    {
       align: "right",
       // 自定义表头，tsx用法
       headerRenderer: () => (
@@ -186,6 +207,12 @@ export function useColumns() {
             clearable
             placeholder="请输入关键词"
           />
+          <el-button
+            size="small"
+            onClick={() => onCurrentChange(pagination.currentPage)}
+          >
+            刷新
+          </el-button>
           <el-button size="small" onClick={() => onCurrentChange(1)}>
             搜索
           </el-button>
