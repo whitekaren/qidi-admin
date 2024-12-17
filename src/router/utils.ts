@@ -30,8 +30,8 @@ const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
 import { getAsyncRoutes } from "@/api/routes";
 
 function handRank(routeInfo: any) {
-  const { name, path, parentId, meta } = routeInfo;
-  return isAllEmpty(parentId)
+  const { name, path, parent_id, meta } = routeInfo;
+  return isAllEmpty(parent_id)
     ? isAllEmpty(meta?.rank) ||
       (meta?.rank === 0 && name !== "Home" && path !== "/")
       ? true

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useColumns } from "./columns";
+
 const tableRef = ref();
 
 const {

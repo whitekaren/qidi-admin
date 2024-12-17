@@ -188,7 +188,7 @@ function resolvePath(routePath) {
                 layout === 'vertical' &&
                 isCollapse &&
                 toRaw(item.meta.icon) &&
-                item.parentId === null
+                item.parent_id === null
               )
         "
         :tippyProps="{
@@ -202,7 +202,7 @@ function resolvePath(routePath) {
             layout !== 'horizontal' &&
             isCollapse &&
             !toRaw(item.meta.icon) &&
-            item.parentId === null
+            item.parent_id === null
         }"
       >
         {{ item.meta.title }}

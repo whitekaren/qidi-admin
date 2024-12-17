@@ -10,6 +10,10 @@ import { message } from "@/utils/message";
 import { getUserList, editUser } from "@/api/list";
 import { CustomMouseMenu } from "@howdyjs/mouse-menu";
 import { addDrawer } from "@/components/ReDrawer/index";
+import { hasPerms } from "@/utils/auth";
+// import { useUserStoreHook } from "@/store/modules/user";
+
+// const { permissions } = useUserStoreHook();
 
 export function useColumns() {
   const dataList = ref([]);
@@ -74,7 +78,8 @@ export function useColumns() {
         fn: _row => {
           onBaseClick();
           // console.log(row.id);
-        }
+        },
+        hidden: !hasPerms("permission:btn:add")
       }
     ]
   };
