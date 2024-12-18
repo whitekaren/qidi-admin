@@ -116,10 +116,10 @@ export function useColumns() {
   };
 
   function counttimeDifference(row) {
-    const lastUpdateTime = new Date(row.updated_at);
+    const lastupdated_at = new Date(row.updated_at);
     const currentTime = new Date();
     const timeDifference =
-      Math.abs(currentTime.getTime() - lastUpdateTime.getTime()) / 1000;
+      Math.abs(currentTime.getTime() - lastupdated_at.getTime()) / 1000;
     return timeDifference;
   }
 

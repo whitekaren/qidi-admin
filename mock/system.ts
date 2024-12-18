@@ -24,7 +24,7 @@ export default defineFakeRoute([
             name: "研发部门"
           },
           remark: "管理员",
-          createTime: 1605456000000
+          created_at: 1605456000000
         },
         {
           avatar: "https://avatars.githubusercontent.com/u/52823142",
@@ -40,7 +40,7 @@ export default defineFakeRoute([
             name: "测试部门"
           },
           remark: "普通用户",
-          createTime: 1605456000000
+          created_at: 1605456000000
         }
       ];
       list = list.filter(item => item.username.includes(body?.username));
@@ -106,8 +106,8 @@ export default defineFakeRoute([
     response: ({ body }) => {
       let list = [
         {
-          createTime: 1605456000000, // 时间戳（毫秒ms）
-          updateTime: 1684512000000,
+          created_at: 1605456000000, // 时间戳（毫秒ms）
+          updated_at: 1684512000000,
           id: 1,
           name: "超级管理员",
           code: "admin",
@@ -115,8 +115,8 @@ export default defineFakeRoute([
           remark: "超级管理员拥有最高权限"
         },
         {
-          createTime: 1605456000000,
-          updateTime: 1684512000000,
+          created_at: 1605456000000,
+          updated_at: 1684512000000,
           id: 2,
           name: "普通角色",
           code: "common",
@@ -1267,7 +1267,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 1, // 状态 1 启用 0 停用
             type: 1, // 1 公司 2 分公司 3 部门
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1280,7 +1280,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 1,
             type: 2,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1293,7 +1293,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 1,
             type: 3,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1306,7 +1306,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 1,
             type: 3,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1319,7 +1319,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 1,
             type: 2,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1332,7 +1332,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 1,
             type: 3,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1345,7 +1345,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 1,
             type: 3,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1358,7 +1358,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 0,
             type: 3,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1371,7 +1371,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 1,
             type: 3,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           },
           {
@@ -1384,7 +1384,7 @@ export default defineFakeRoute([
             email: faker.internet.email(),
             status: 0,
             type: 3,
-            createTime: 1605456000000,
+            created_at: 1605456000000,
             remark: "这里是备注信息这里是备注信息这里是备注信息这里是备注信息"
           }
         ]

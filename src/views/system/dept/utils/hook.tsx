@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import editForm from "../form.vue";
 import { handleTree } from "@/utils/tree";
 import { message } from "@/utils/message";
-import { getDeptList } from "@/api/system";
+import { getDeptList, editDeptList, deleteDeptList } from "@/api/system";
 import { usePublicHooks } from "../../hooks";
 import { addDialog } from "@/components/ReDialog";
 import { reactive, ref, onMounted, h } from "vue";
@@ -45,9 +45,9 @@ export function useDept() {
     {
       label: "创建时间",
       minWidth: 200,
-      prop: "createTime",
-      formatter: ({ createTime }) =>
-        dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
+      prop: "created_at",
+      formatter: ({ created_at }) =>
+        dayjs(created_at).format("YYYY-MM-DD HH:mm:ss")
     },
     {
       label: "备注",
@@ -117,7 +117,8 @@ export function useDept() {
           email: row?.email ?? "",
           sort: row?.sort ?? 0,
           status: row?.status ?? 1,
-          remark: row?.remark ?? ""
+          remark: row?.remark ?? "",
+          id: row?.id ?? ""
         }
       },
       width: "40%",
@@ -141,11 +142,63 @@ export function useDept() {
             console.log("curData", curData);
             // 表单规则校验通过
             if (title === "新增") {
-              // 实际开发先调用新增接口，再进行下面操作
-              chores();
+              interface Dynamicdata {
+                name: string;
+                parent_id?: number;
+                sort?: number;
+                phone?: string;
+                email?: string;
+                remark?: string;
+                status?: number;
+                type?: number;
+                [key: string]: any; // 允许任意数量的动态属性
+              }
+              const dynamicParams: Dynamicdata = curData as Dynamicdata;
+              editDeptList(dynamicParams)
+                .then(data => {
+                  if (data.status == 0) {
+                    chores();
+                  } else {
+                    message(`您${title}数据失败`, {
+                      type: "error"
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                  message(`您${title}数据失败`, {
+                    type: "error"
+                  });
+                });
             } else {
-              // 实际开发先调用修改接口，再进行下面操作
-              chores();
+              interface Dynamicdata {
+                name: string;
+                parent_id?: number;
+                sort?: number;
+                phone?: string;
+                email?: string;
+                remark?: string;
+                status?: number;
+                type?: number;
+                [key: string]: any; // 允许任意数量的动态属性
+              }
+              const dynamicParams: Dynamicdata = curData as Dynamicdata;
+              editDeptList(dynamicParams)
+                .then(data => {
+                  if (data.status == 0) {
+                    chores();
+                  } else {
+                    message(`您${title}数据失败`, {
+                      type: "error"
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                  message(`您${title}数据失败`, {
+                    type: "error"
+                  });
+                });
             }
           }
         });
@@ -154,8 +207,25 @@ export function useDept() {
   }
 
   function handleDelete(row) {
-    message(`您删除了部门名称为${row.name}的这条数据`, { type: "success" });
-    onSearch();
+    deleteDeptList({ id: row.id })
+      .then(data => {
+        if (data.status == 0) {
+          message(`您删除了部门名称为${row.name}的这条数据`, {
+            type: "success"
+          });
+          onSearch();
+        } else {
+          message(`您删除数据失败`, {
+            type: "error"
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        message(`您删除数据失败`, {
+          type: "error"
+        });
+      });
   }
 
   onMounted(() => {

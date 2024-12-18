@@ -82,15 +82,15 @@ const systemManagementRouter = {
         roles: ["admin"]
       }
     },
-    {
-      path: "/system/menu/index",
-      name: "SystemMenu",
-      meta: {
-        icon: "ep:menu",
-        title: "菜单管理",
-        roles: ["admin"]
-      }
-    },
+    // {
+    //   path: "/system/menu/index",
+    //   name: "SystemMenu",
+    //   meta: {
+    //     icon: "ep:menu",
+    //     title: "菜单管理",
+    //     roles: ["admin"]
+    //   }
+    // },
     {
       path: "/system/dept/index",
       name: "SystemDept",

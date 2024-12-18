@@ -8,14 +8,21 @@ import { addDialog } from "@/components/ReDialog";
 import type { FormItemProps } from "../utils/types";
 import type { PaginationProps } from "@pureadmin/table";
 import { getKeyList, deviceDetection } from "@pureadmin/utils";
-import { getRoleList, getRoleMenu, getRoleMenuIds } from "@/api/system";
+import {
+  getRoleList,
+  getRoleMenu,
+  getRoleMenuIds,
+  editRoleList,
+  deleteRoleList
+} from "@/api/system";
 import { type Ref, reactive, ref, onMounted, h, toRaw, watch } from "vue";
 
 export function useRole(treeRef: Ref) {
   const form = reactive({
     name: "",
     code: "",
-    status: ""
+    status: "",
+    limit: 100
   });
   const curRow = ref();
   const formRef = ref();
@@ -79,10 +86,10 @@ export function useRole(treeRef: Ref) {
     },
     {
       label: "创建时间",
-      prop: "createTime",
+      prop: "created_at",
       minWidth: 160,
-      formatter: ({ createTime }) =>
-        dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
+      formatter: ({ created_at }) =>
+        dayjs(created_at).format("YYYY-MM-DD HH:mm:ss")
     },
     {
       label: "操作",
@@ -118,25 +125,46 @@ export function useRole(treeRef: Ref) {
       }
     )
       .then(() => {
-        switchLoadMap.value[index] = Object.assign(
-          {},
-          switchLoadMap.value[index],
-          {
-            loading: true
-          }
-        );
-        setTimeout(() => {
-          switchLoadMap.value[index] = Object.assign(
-            {},
-            switchLoadMap.value[index],
-            {
-              loading: false
+        editRoleList({ id: row.id, status: row.status })
+          .then(data => {
+            if (data.status == 0) {
+              switchLoadMap.value[index] = Object.assign(
+                {},
+                switchLoadMap.value[index],
+                {
+                  loading: true
+                }
+              );
+              setTimeout(() => {
+                switchLoadMap.value[index] = Object.assign(
+                  {},
+                  switchLoadMap.value[index],
+                  {
+                    loading: false
+                  }
+                );
+                message(`已${row.status === 0 ? "停用" : "启用"}${row.name}`, {
+                  type: "success"
+                });
+              }, 300);
+            } else {
+              message(
+                `您${row.status === 0 ? "停用" : "启用"}${row.name}数据失败`,
+                {
+                  type: "error"
+                }
+              );
             }
-          );
-          message(`已${row.status === 0 ? "停用" : "启用"}${row.name}`, {
-            type: "success"
+          })
+          .catch(error => {
+            console.log(error);
+            message(
+              `您${row.status === 0 ? "停用" : "启用"}${row.name}数据失败`,
+              {
+                type: "error"
+              }
+            );
           });
-        }, 300);
       })
       .catch(() => {
         row.status === 0 ? (row.status = 1) : (row.status = 0);
@@ -144,8 +172,25 @@ export function useRole(treeRef: Ref) {
   }
 
   function handleDelete(row) {
-    message(`您删除了角色名称为${row.name}的这条数据`, { type: "success" });
-    onSearch();
+    deleteRoleList({ id: row.id })
+      .then(data => {
+        if (data.status == 0) {
+          message(`您删除了角色名称为${row.name}的这条数据`, {
+            type: "success"
+          });
+          onSearch();
+        } else {
+          message(`您删除数据失败`, {
+            type: "error"
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        message(`您删除数据失败`, {
+          type: "error"
+        });
+      });
   }
 
   function handleSizeChange(val: number) {
@@ -163,10 +208,10 @@ export function useRole(treeRef: Ref) {
   async function onSearch() {
     loading.value = true;
     const { data } = await getRoleList(toRaw(form));
-    dataList.value = data.list;
-    pagination.total = data.total;
-    pagination.pageSize = data.pageSize;
-    pagination.currentPage = data.currentPage;
+    dataList.value = data.list.sort((a, b) => a.id - b.id);
+    pagination.total = data.count;
+    pagination.pageSize = 100;
+    pagination.currentPage = 1;
 
     setTimeout(() => {
       loading.value = false;
@@ -186,7 +231,8 @@ export function useRole(treeRef: Ref) {
         formInline: {
           name: row?.name ?? "",
           code: row?.code ?? "",
-          remark: row?.remark ?? ""
+          remark: row?.remark ?? "",
+          id: row?.id ?? ""
         }
       },
       width: "40%",
@@ -211,10 +257,61 @@ export function useRole(treeRef: Ref) {
             // 表单规则校验通过
             if (title === "新增") {
               // 实际开发先调用新增接口，再进行下面操作
-              chores();
+              interface Dynamicdata {
+                name: string;
+                code: string;
+                permissions?: string;
+                remark?: string;
+                status?: number;
+                [key: string]: any; // 允许任意数量的动态属性
+              }
+              const dynamicParams: Dynamicdata = curData as Dynamicdata;
+              editRoleList(dynamicParams)
+                .then(data => {
+                  if (data.status == 0) {
+                    chores();
+                  } else {
+                    message(`您${title}数据失败`, {
+                      type: "error"
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                  message(`您${title}数据失败`, {
+                    type: "error"
+                  });
+                });
             } else {
               // 实际开发先调用修改接口，再进行下面操作
-              chores();
+              interface Dynamicdata {
+                name: string;
+                parent_id?: number;
+                sort?: number;
+                phone?: string;
+                email?: string;
+                remark?: string;
+                status?: number;
+                type?: number;
+                [key: string]: any; // 允许任意数量的动态属性
+              }
+              const dynamicParams: Dynamicdata = curData as Dynamicdata;
+              editRoleList(dynamicParams)
+                .then(data => {
+                  if (data.status == 0) {
+                    chores();
+                  } else {
+                    message(`您${title}数据失败`, {
+                      type: "error"
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                  message(`您${title}数据失败`, {
+                    type: "error"
+                  });
+                });
             }
           }
         });
@@ -249,9 +346,28 @@ export function useRole(treeRef: Ref) {
     const { id, name } = curRow.value;
     // 根据用户 id 调用实际项目中菜单权限修改接口
     console.log(id, treeRef.value.getCheckedKeys());
-    message(`角色名称为${name}的菜单权限修改成功`, {
-      type: "success"
-    });
+    editRoleList({
+      id: id,
+      permissions: treeRef.value.getCheckedKeys().join(",")
+    })
+      .then(data => {
+        if (data.status == 0) {
+          message(`角色名称为${name}的菜单权限修改成功`, {
+            type: "success"
+          });
+        } else {
+          console.log(data.message);
+          message(`角色名称为${name}的菜单权限修改失败`, {
+            type: "error"
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        message(`角色名称为${name}的菜单权限修改失败`, {
+          type: "error"
+        });
+      });
   }
 
   /** 数据权限 可自行开发 */

@@ -8,6 +8,7 @@ interface FormItemProps {
   sort: number;
   status: number;
   remark: string;
+  id: string | number;
 }
 interface FormProps {
   formInline: FormItemProps;

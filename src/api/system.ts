@@ -5,6 +5,12 @@ type Result = {
   data?: Array<any>;
 };
 
+type PermissionsResult = {
+  status: number;
+  data?: Array<number>;
+  message: string;
+};
+
 type departmentData = {
   name?: string;
   parent_id?: number;
@@ -21,11 +27,33 @@ type departmentData = {
   updated_at?: Date;
 };
 
+type roleData = {
+  name?: string;
+  id?: number;
+  code?: string;
+  status?: number;
+  remark?: string;
+  permissions?: string;
+  created_at?: Date;
+  updated_at?: Date;
+};
+
 type DataResult = {
   status: number;
   data?: {
     /** 列表数据 */
     list: Array<departmentData>;
+    /** 总条目数 */
+    count?: number;
+  };
+  message: string;
+};
+
+type RoleResult = {
+  status: number;
+  data?: {
+    /** 列表数据 */
+    list: Array<roleData>;
     /** 总条目数 */
     count?: number;
   };
@@ -62,8 +90,22 @@ export const getRoleIds = (data?: object) => {
 };
 
 /** 获取系统管理-角色管理列表 */
-export const getRoleList = (data?: object) => {
-  return http.request<ResultTable>("post", "/role", { data });
+export const getRoleList = (params?: object) => {
+  return http.request<RoleResult>("get", "qidi/admin/roleList", { params });
+};
+
+/** 编辑/新增系统管理-角色管理列表 */
+export const editRoleList = (data?: object) => {
+  return http.request<DataResult>("post", "qidi/admin/editRole", {
+    data
+  });
+};
+
+/** 删除系统管理-角色管理列表 */
+export const deleteRoleList = (data?: object) => {
+  return http.request<DataResult>("post", "qidi/admin/deleteRole", {
+    data
+  });
 };
 
 /** 获取系统管理-菜单管理列表 */
@@ -75,6 +117,20 @@ export const getMenuList = (data?: object) => {
 export const getDeptList = (params?: object) => {
   return http.request<DataResult>("get", "qidi/admin/departmentList", {
     params
+  });
+};
+
+/** 编辑/新增系统管理-部门管理列表 */
+export const editDeptList = (data?: object) => {
+  return http.request<DataResult>("post", "qidi/admin/editDepartment", {
+    data
+  });
+};
+
+/** 删除系统管理-部门管理列表 */
+export const deleteDeptList = (data?: object) => {
+  return http.request<DataResult>("post", "qidi/admin/deleteDepartment", {
+    data
   });
 };
 
@@ -109,6 +165,8 @@ export const getRoleMenu = (data?: object) => {
 };
 
 /** 获取角色管理-权限-菜单权限-根据角色 id 查对应菜单 */
-export const getRoleMenuIds = (data?: object) => {
-  return http.request<Result>("post", "/role-menu-ids", { data });
+export const getRoleMenuIds = (params?: object) => {
+  return http.request<PermissionsResult>("get", "qidi/admin/rolepermissions", {
+    params
+  });
 };

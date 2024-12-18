@@ -7,6 +7,8 @@ interface FormItemProps {
   code: string;
   /** 备注 */
   remark: string;
+
+  id: string | number;
 }
 interface FormProps {
   formInline: FormItemProps;

@@ -150,9 +150,9 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     {
       label: "创建时间",
       minWidth: 90,
-      prop: "createTime",
-      formatter: ({ createTime }) =>
-        dayjs(createTime).format("YYYY-MM-DD HH:mm:ss")
+      prop: "created_at",
+      formatter: ({ created_at }) =>
+        dayjs(created_at).format("YYYY-MM-DD HH:mm:ss")
     },
     {
       label: "操作",
