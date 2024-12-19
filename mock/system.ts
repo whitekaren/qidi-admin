@@ -152,62 +152,68 @@ export default defineFakeRoute([
           // 权限管理
           {
             parent_id: 0,
+            id: 100,
+            menuType: 0,
+            title: "按钮权限"
+          },
+          {
+            parent_id: 100,
+            id: 101,
+            menuType: 0,
+            title: "用户列表"
+          },
+          {
+            parent_id: 100,
+            id: 102,
+            menuType: 0,
+            title: "设备列表"
+          },
+          {
+            parent_id: 101,
+            id: 103,
+            menuType: 3,
+            title: "添加账号"
+          },
+          {
+            parent_id: 102,
+            id: 104,
+            menuType: 3,
+            title: "解绑"
+          },
+          {
+            parent_id: 102,
+            id: 105,
+            menuType: 3,
+            title: "新连接"
+          },
+          {
+            parent_id: 102,
+            id: 106,
+            menuType: 3,
+            title: "旧连接"
+          },
+          // 系统管理
+          {
+            parent_id: 0,
             id: 200,
             menuType: 0,
-            title: "权限管理"
+            title: "系统管理"
           },
           {
             parent_id: 200,
             id: 201,
             menuType: 0,
-            title: "页面权限"
+            title: "用户管理"
           },
           {
             parent_id: 200,
             id: 202,
             menuType: 0,
-            title: "按钮权限"
-          },
-          {
-            parent_id: 202,
-            id: 203,
-            menuType: 3,
-            title: "添加"
-          },
-          {
-            parent_id: 202,
-            id: 204,
-            menuType: 3,
-            title: "修改"
-          },
-          {
-            parent_id: 202,
-            id: 205,
-            menuType: 3,
-            title: "删除"
-          },
-          // 系统管理
-          {
-            parent_id: 0,
-            id: 300,
-            menuType: 0,
-            title: "系统管理"
-          },
-          {
-            parent_id: 300,
-            id: 301,
-            menuType: 0,
-            title: "用户管理"
-          },
-          {
-            parent_id: 300,
-            id: 302,
-            menuType: 0,
             title: "角色管理"
           },
           {
-            parent_id: 300,
-            id: 304,
+            parent_id: 200,
+            id: 203,
             menuType: 0,
             title: "部门管理"
           }

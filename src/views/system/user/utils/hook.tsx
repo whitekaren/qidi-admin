@@ -205,25 +205,49 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       }
     )
       .then(() => {
-        switchLoadMap.value[index] = Object.assign(
-          {},
-          switchLoadMap.value[index],
-          {
-            loading: true
-          }
-        );
-        setTimeout(() => {
-          switchLoadMap.value[index] = Object.assign(
-            {},
-            switchLoadMap.value[index],
-            {
-              loading: false
+        editUserList({ id: row.id, status: row.status })
+          .then(data => {
+            if (data.status == 0) {
+              switchLoadMap.value[index] = Object.assign(
+                {},
+                switchLoadMap.value[index],
+                {
+                  loading: true
+                }
+              );
+              setTimeout(() => {
+                switchLoadMap.value[index] = Object.assign(
+                  {},
+                  switchLoadMap.value[index],
+                  {
+                    loading: false
+                  }
+                );
+                message(
+                  `已${row.status === 0 ? "停用" : "启用"}${row.username}`,
+                  {
+                    type: "success"
+                  }
+                );
+              }, 300);
+            } else {
+              message(
+                `您${row.status === 0 ? "停用" : "启用"}${row.username}数据失败`,
+                {
+                  type: "error"
+                }
+              );
             }
-          );
-          message("已成功修改用户状态", {
-            type: "success"
+          })
+          .catch(error => {
+            console.log(error);
+            message(
+              `您${row.status === 0 ? "停用" : "启用"}${row.username}数据失败`,
+              {
+                type: "error"
+              }
+            );
           });
-        }, 300);
       })
       .catch(() => {
         row.status === 0 ? (row.status = 1) : (row.status = 0);

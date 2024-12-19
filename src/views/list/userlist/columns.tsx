@@ -79,7 +79,7 @@ export function useColumns() {
           onBaseClick();
           // console.log(row.id);
         },
-        hidden: !hasPerms("permission:btn:add")
+        hidden: !hasPerms("permission:btn:addaccount")
       }
     ]
   };

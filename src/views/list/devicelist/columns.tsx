@@ -10,6 +10,7 @@ import { message } from "@/utils/message";
 import { getDeviceList, unbinddevice } from "@/api/list";
 import { CustomMouseMenu } from "@howdyjs/mouse-menu";
 // import { addDrawer } from "@/components/ReDrawer/index";
+import { hasPerms } from "@/utils/auth";
 
 export function useColumns() {
   const dataList = ref([]);
@@ -85,7 +86,7 @@ export function useColumns() {
             onCurrentChange(pagination.currentPage);
           }),
         hidden: row => {
-          return row.user_id == null;
+          return row.user_id == null || !hasPerms("permission:btn:unbind");
         }
       },
       {
@@ -101,7 +102,7 @@ export function useColumns() {
             "_blank"
           ),
         hidden: row => {
-          return row.user_id == null;
+          return row.user_id == null || !hasPerms("permission:btn:newlink");
         }
       },
       {
@@ -109,7 +110,7 @@ export function useColumns() {
         tips: "frp",
         fn: row => window.open("http://" + row.url, "_blank"),
         hidden: row => {
-          return row.user_id == null;
+          return row.user_id == null || !hasPerms("permission:btn:oldlink");
         }
       }
     ]
