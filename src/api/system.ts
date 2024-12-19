@@ -38,6 +38,37 @@ type roleData = {
   updated_at?: Date;
 };
 
+type userData = {
+  id?: number;
+  /** 用于判断是`新增`还是`修改` */
+  nickname: string;
+  username: string;
+  password: string;
+  phone: string | number;
+  email: string;
+  sex: string;
+  status: number;
+  roles?: string;
+  role_ids?: string;
+  dept_id?: number;
+  dept_name?: string;
+  remark: string;
+  created_at?: Date;
+  /** 更新时间 */
+  updated_at?: Date;
+};
+
+type userResult = {
+  status: number;
+  data?: {
+    /** 列表数据 */
+    list: Array<userData>;
+    /** 总条目数 */
+    count?: number;
+  };
+  message: string;
+};
+
 type DataResult = {
   status: number;
   data?: {
@@ -75,13 +106,29 @@ type ResultTable = {
 };
 
 /** 获取系统管理-用户管理列表 */
-export const getUserList = (data?: object) => {
-  return http.request<ResultTable>("post", "/user", { data });
+export const getUserList = (params?: object) => {
+  return http.request<userResult>("get", "qidi/admin/adminUserList", {
+    params
+  });
+};
+
+/** 编辑/新增系统管理-用户管理列表 */
+export const editUserList = (data?: object) => {
+  return http.request<userData>("post", "qidi/admin/editAdminUser", {
+    data
+  });
+};
+
+/** 删除系统管理-角色管理列表 */
+export const deleteUserList = (data?: object) => {
+  return http.request<DataResult>("post", "qidi/admin/deleteAdminUser", {
+    data
+  });
 };
 
 /** 系统管理-用户管理-获取所有角色列表 */
 export const getAllRoleList = () => {
-  return http.request<Result>("get", "/list-all-role");
+  return http.request<RoleResult>("get", "qidi/admin/roleList");
 };
 
 /** 系统管理-用户管理-根据userId，获取对应角色id列表（userId：用户id） */
@@ -166,7 +213,7 @@ export const getRoleMenu = (data?: object) => {
 
 /** 获取角色管理-权限-菜单权限-根据角色 id 查对应菜单 */
 export const getRoleMenuIds = (params?: object) => {
-  return http.request<PermissionsResult>("get", "qidi/admin/rolepermissions", {
+  return http.request<PermissionsResult>("get", "qidi/admin/rolePermissions", {
     params
   });
 };

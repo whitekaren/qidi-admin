@@ -77,7 +77,7 @@ export function useDept() {
     const { data } = await getDeptList({
       limit: 100
     }); // 这里是返回一维数组结构，前端自行处理成树结构，返回格式要求：唯一id加父节点parent_id，parent_id取父节点id
-    let newData = data.list.sort((a, b) => a.sort - b.sort);
+    let newData = data.list;
     if (!isAllEmpty(form.name)) {
       // 前端搜索部门名称
       newData = newData.filter(item => item.name.includes(form.name));

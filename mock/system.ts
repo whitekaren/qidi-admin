@@ -48,7 +48,8 @@ export default defineFakeRoute([
         String(item.status).includes(String(body?.status))
       );
       if (body.phone) list = list.filter(item => item.phone === body.phone);
-      if (body.deptId) list = list.filter(item => item.dept.id === body.deptId);
+      if (body.dept_id)
+        list = list.filter(item => item.dept.id === body.dept_id);
       return {
         success: true,
         data: {
@@ -148,73 +149,6 @@ export default defineFakeRoute([
       return {
         success: true,
         data: [
-          // 外部页面
-          {
-            parent_id: 0,
-            id: 100,
-            menuType: 0, // 菜单类型（0代表菜单、1代表iframe、2代表外链、3代表按钮）
-            title: "外部页面"
-          },
-          {
-            parent_id: 100,
-            id: 101,
-            menuType: 0,
-            title: "文档外链"
-          },
-          {
-            parent_id: 101,
-            id: 102,
-            menuType: 2,
-            title: "vue-pure-admin"
-          },
-          {
-            parent_id: 101,
-            id: 103,
-            menuType: 2,
-            title: "pure-admin-utils"
-          },
-          {
-            parent_id: 100,
-            id: 104,
-            menuType: 1,
-            title: "文档内嵌"
-          },
-          {
-            parent_id: 104,
-            id: 105,
-            menuType: 1,
-            title: "element-plus"
-          },
-          {
-            parent_id: 104,
-            id: 106,
-            menuType: 1,
-            title: "tailwindcss"
-          },
-          {
-            parent_id: 104,
-            id: 107,
-            menuType: 1,
-            title: "vue3"
-          },
-          {
-            parent_id: 104,
-            id: 108,
-            menuType: 1,
-            title: "vite"
-          },
-          {
-            parent_id: 104,
-            id: 109,
-            menuType: 1,
-            title: "pinia"
-          },
-          {
-            parent_id: 104,
-            id: 110,
-            menuType: 1,
-            title: "vue-router"
-          },
           // 权限管理
           {
             parent_id: 0,
@@ -273,71 +207,9 @@ export default defineFakeRoute([
           },
           {
             parent_id: 300,
-            id: 303,
-            menuType: 0,
-            title: "菜单管理"
-          },
-          {
-            parent_id: 300,
             id: 304,
             menuType: 0,
             title: "部门管理"
-          },
-          // 系统监控
-          {
-            parent_id: 0,
-            id: 400,
-            menuType: 0,
-            title: "系统监控"
-          },
-          {
-            parent_id: 400,
-            id: 401,
-            menuType: 0,
-            title: "在线用户"
-          },
-          {
-            parent_id: 400,
-            id: 402,
-            menuType: 0,
-            title: "登录日志"
-          },
-          {
-            parent_id: 400,
-            id: 403,
-            menuType: 0,
-            title: "操作日志"
-          },
-          {
-            parent_id: 400,
-            id: 404,
-            menuType: 0,
-            title: "系统日志"
-          },
-          // 标签页操作
-          {
-            parent_id: 0,
-            id: 500,
-            menuType: 0,
-            title: "标签页操作"
-          },
-          {
-            parent_id: 500,
-            id: 501,
-            menuType: 0,
-            title: "标签页操作"
-          },
-          {
-            parent_id: 500,
-            id: 502,
-            menuType: 0,
-            title: "query传参模式"
-          },
-          {
-            parent_id: 500,
-            id: 503,
-            menuType: 0,
-            title: "params传参模式"
           }
         ]
       };

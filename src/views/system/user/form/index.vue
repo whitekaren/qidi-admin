@@ -23,11 +23,11 @@ const props = withDefaults(defineProps<FormProps>(), {
 
 const sexOptions = [
   {
-    value: 0,
+    value: "0",
     label: "男"
   },
   {
-    value: 1,
+    value: "1",
     label: "女"
   }
 ];
@@ -123,7 +123,7 @@ defineExpose({ getRef });
       <re-col :value="12" :xs="24" :sm="24">
         <el-form-item label="归属部门">
           <el-cascader
-            v-model="newFormInline.parent_id"
+            v-model="newFormInline.dept_id"
             class="w-full"
             :options="newFormInline.higherDeptOptions"
             :props="{

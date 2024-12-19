@@ -40,7 +40,7 @@ const newFormInline = ref(props.formInline);
             <el-option
               v-for="(item, index) in newFormInline.roleOptions"
               :key="index"
-              :value="item.id"
+              :value="Number(item.id)"
               :label="item.name"
             >
               {{ item.name }}

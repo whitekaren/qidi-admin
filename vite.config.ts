@@ -27,7 +27,7 @@ export default ({ mode }: ConfigEnv): UserConfigExport => {
       proxy: {
         "/qidi": {
           // 这里填写后端地址
-          target: "http://192.168.24.126:19130/qidi",
+          target: "http://192.168.21.152:19130/qidi",
           changeOrigin: true,
           rewrite: path => path.replace(/^\/qidi/, "")
         }

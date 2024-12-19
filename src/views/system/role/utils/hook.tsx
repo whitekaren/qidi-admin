@@ -22,7 +22,8 @@ export function useRole(treeRef: Ref) {
     name: "",
     code: "",
     status: "",
-    limit: 100
+    limit: 100,
+    page: 1
   });
   const curRow = ref();
   const formRef = ref();
@@ -44,7 +45,7 @@ export function useRole(treeRef: Ref) {
   };
   const pagination = reactive<PaginationProps>({
     total: 0,
-    pageSize: 10,
+    pageSize: 100,
     currentPage: 1,
     background: true
   });
@@ -208,7 +209,7 @@ export function useRole(treeRef: Ref) {
   async function onSearch() {
     loading.value = true;
     const { data } = await getRoleList(toRaw(form));
-    dataList.value = data.list.sort((a, b) => a.id - b.id);
+    dataList.value = data.list;
     pagination.total = data.count;
     pagination.pageSize = 100;
     pagination.currentPage = 1;

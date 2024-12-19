@@ -18,10 +18,11 @@ import {
   deviceDetection
 } from "@pureadmin/utils";
 import {
-  getRoleIds,
   getDeptList,
   getUserList,
-  getAllRoleList
+  getAllRoleList,
+  editUserList,
+  deleteUserList
 } from "@/api/system";
 import {
   ElForm,
@@ -44,10 +45,12 @@ import {
 export function useUser(tableRef: Ref, treeRef: Ref) {
   const form = reactive({
     // 左侧部门树的id
-    deptId: "",
+    dept_id: "",
     username: "",
     phone: "",
-    status: ""
+    status: "",
+    limit: 100,
+    page: 1
   });
   const formRef = ref();
   const ruleFormRef = ref();
@@ -63,7 +66,7 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
   const selectedNum = ref(0);
   const pagination = reactive<PaginationProps>({
     total: 0,
-    pageSize: 10,
+    pageSize: 100,
     currentPage: 1,
     background: true
   });
@@ -110,16 +113,16 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       cellRenderer: ({ row, props }) => (
         <el-tag
           size={props.size}
-          type={row.sex === 1 ? "danger" : null}
+          type={row.sex === "1" ? "danger" : null}
           effect="plain"
         >
-          {row.sex === 1 ? "女" : "男"}
+          {row.sex === "1" ? "女" : "男"}
         </el-tag>
       )
     },
     {
       label: "部门",
-      prop: "dept.name",
+      prop: "dept_name",
       minWidth: 90
     },
     {
@@ -232,8 +235,25 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
   }
 
   function handleDelete(row) {
-    message(`您删除了用户编号为${row.id}的这条数据`, { type: "success" });
-    onSearch();
+    deleteUserList({ id: row.id })
+      .then(data => {
+        if (data.status == 0) {
+          message(`您删除了角色名称为${row.nickname}的这条数据`, {
+            type: "success"
+          });
+          onSearch();
+        } else {
+          message(`您删除数据失败`, {
+            type: "error"
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        message(`您删除数据失败`, {
+          type: "error"
+        });
+      });
   }
 
   function handleSizeChange(val: number) {
@@ -274,9 +294,9 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     loading.value = true;
     const { data } = await getUserList(toRaw(form));
     dataList.value = data.list;
-    pagination.total = data.total;
-    pagination.pageSize = data.pageSize;
-    pagination.currentPage = data.currentPage;
+    pagination.total = data.count;
+    pagination.pageSize = 20;
+    pagination.currentPage = 1;
 
     setTimeout(() => {
       loading.value = false;
@@ -286,13 +306,13 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
   const resetForm = formEl => {
     if (!formEl) return;
     formEl.resetFields();
-    form.deptId = "";
+    form.dept_id = "";
     treeRef.value.onTreeReset();
     onSearch();
   };
 
   function onTreeSelect({ id, selected }) {
-    form.deptId = selected ? id : "";
+    form.dept_id = selected ? id : "";
     onSearch();
   }
 
@@ -315,7 +335,8 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
         formInline: {
           title,
           higherDeptOptions: formatHigherDeptOptions(higherDeptOptions.value),
-          parent_id: row?.dept.id ?? 0,
+          id: row?.id ?? "",
+          parent_id: row?.dept_id ?? 0,
           nickname: row?.nickname ?? "",
           username: row?.username ?? "",
           password: row?.password ?? "",
@@ -323,7 +344,8 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
           email: row?.email ?? "",
           sex: row?.sex ?? "",
           status: row?.status ?? 1,
-          remark: row?.remark ?? ""
+          remark: row?.remark ?? "",
+          dept_id: row?.dept_id ?? 0
         }
       },
       width: "46%",
@@ -347,11 +369,68 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
             console.log("curData", curData);
             // 表单规则校验通过
             if (title === "新增") {
-              // 实际开发先调用新增接口，再进行下面操作
-              chores();
+              interface Dynamicdata {
+                /** 用于判断是`新增`还是`修改` */
+                nickname: string;
+                username: string;
+                password: string;
+                phone: string | number;
+                email: string;
+                sex: string;
+                status: number;
+                dept_id?: number;
+                dept_name?: string;
+                [key: string]: any; // 允许任意数量的动态属性
+              }
+              const dynamicParams: Dynamicdata = curData as Dynamicdata;
+              curData.dept_name = "测试部门";
+              editUserList(dynamicParams)
+                .then(data => {
+                  if (data.status == 0) {
+                    chores();
+                  } else {
+                    message(`您${title}数据失败`, {
+                      type: "error"
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                  message(`您${title}数据失败`, {
+                    type: "error"
+                  });
+                });
             } else {
               // 实际开发先调用修改接口，再进行下面操作
-              chores();
+              interface Dynamicdata {
+                nickname: string;
+                username: string;
+                password: string;
+                phone: string | number;
+                email: string;
+                sex: string;
+                status: number;
+                dept_id?: number;
+                dept_name?: string;
+                [key: string]: any; // 允许任意数量的动态属性
+              }
+              const dynamicParams: Dynamicdata = curData as Dynamicdata;
+              editUserList(dynamicParams)
+                .then(data => {
+                  if (data.status == 0) {
+                    chores();
+                  } else {
+                    message(`您${title}数据失败`, {
+                      type: "error"
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.log(error);
+                  message(`您${title}数据失败`, {
+                    type: "error"
+                  });
+                });
             }
           }
         });
@@ -450,11 +529,28 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
         ruleFormRef.value.validate(valid => {
           if (valid) {
             // 表单规则校验通过
-            message(`已成功重置 ${row.username} 用户的密码`, {
-              type: "success"
-            });
             console.log(pwdForm.newPwd);
             // 根据实际业务使用pwdForm.newPwd和row里的某些字段去调用重置用户密码接口即可
+
+            editUserList({ id: row.id, password: pwdForm.newPwd })
+              .then(data => {
+                if (data.status == 0) {
+                  message(`已成功重置 ${row.username} 用户的密码`, {
+                    type: "success"
+                  });
+                } else {
+                  message(`重置 ${row.username} 用户的密码失败`, {
+                    type: "success"
+                  });
+                }
+              })
+              .catch(error => {
+                console.log(error);
+                message(`重置 ${row.username} 用户的密码失败`, {
+                  type: "success"
+                });
+              });
+
             done(); // 关闭弹框
             onSearch(); // 刷新表格数据
           }
@@ -466,7 +562,10 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
   /** 分配角色 */
   async function handleRole(row) {
     // 选中的角色列表
-    const ids = (await getRoleIds({ userId: row.id })).data ?? [];
+    const ids =
+      (await getUserList({ id: row.id })).data.list[0].role_ids
+        .split(",")
+        .map(role_id => parseInt(role_id)) ?? [];
     addDialog({
       title: `分配 ${row.username} 用户的角色`,
       props: {
@@ -485,8 +584,33 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
       contentRenderer: () => h(roleForm),
       beforeSure: (done, { options }) => {
         const curData = options.props.formInline as RoleFormItemProps;
-        console.log("curIds", curData.ids);
-        // 根据实际业务使用curData.ids和row里的某些字段去调用修改角色接口即可
+        const ids_str = curData.ids.map(id => id.toString());
+
+        const roles = roleOptions.value
+          .filter(option => ids_str.includes(option.id))
+          .map(option => option.code);
+        editUserList({
+          id: row.id,
+          roles: roles.join(","),
+          role_ids: ids_str.join(",")
+        })
+          .then(data => {
+            if (data.status == 0) {
+              message(`已成功编辑 ${row.username} 用户的角色`, {
+                type: "success"
+              });
+            } else {
+              message(`编辑 ${row.username} 用户的角色失败`, {
+                type: "error"
+              });
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            message(`编辑 ${row.username} 用户的角色失败`, {
+              type: "error"
+            });
+          });
         done(); // 关闭弹框
       }
     });
@@ -500,14 +624,12 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
     const { data } = await getDeptList({
       limit: 100
     });
-    higherDeptOptions.value = handleTree(
-      data.list.sort((a, b) => a.sort - b.sort)
-    );
-    treeData.value = handleTree(data.list.sort((a, b) => a.sort - b.sort));
+    higherDeptOptions.value = handleTree(data.list);
+    treeData.value = handleTree(data.list);
     treeLoading.value = false;
 
     // 角色列表
-    roleOptions.value = (await getAllRoleList()).data;
+    roleOptions.value = (await getAllRoleList()).data.list;
   });
 
   return {

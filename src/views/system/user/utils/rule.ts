@@ -11,14 +11,17 @@ export const formRules = reactive(<FormRules>{
     {
       validator: (rule, value, callback) => {
         if (value === "") {
-          callback();
+          // callback();
+          callback(new Error("手机号为必填项"));
         } else if (!isPhone(value)) {
           callback(new Error("请输入正确的手机号码格式"));
         } else {
           callback();
         }
       },
-      trigger: "blur"
+      trigger: "blur",
+      required: true,
+      message: "手机号为必填项"
       // trigger: "click" // 如果想在点击确定按钮时触发这个校验，trigger 设置成 click 即可
     }
   ],
