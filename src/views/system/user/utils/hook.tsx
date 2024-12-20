@@ -586,10 +586,11 @@ export function useUser(tableRef: Ref, treeRef: Ref) {
   /** 分配角色 */
   async function handleRole(row) {
     // 选中的角色列表
-    const ids =
-      (await getUserList({ id: row.id })).data.list[0].role_ids
-        .split(",")
-        .map(role_id => parseInt(role_id)) ?? [];
+    const userData = await getUserList({ id: row.id });
+    const roleIdsString = userData?.data?.list[0]?.role_ids;
+    const ids = roleIdsString
+      ? roleIdsString.split(",").map(role_id => parseInt(role_id))
+      : [];
     addDialog({
       title: `分配 ${row.username} 用户的角色`,
       props: {

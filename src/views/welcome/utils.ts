@@ -13,6 +13,8 @@ export function getRandomIntBetween(min: number, max: number) {
 
 export function getData() {
   const dataList = ref([]);
+  const userLoginList = ref([]);
+  const userRegisterList = ref([]);
 
   const receivedata = reactive<BoardResult>({
     status: 0,
@@ -21,6 +23,9 @@ export function getData() {
       add_user_count: 0,
       device_count: 0,
       add_device_count: 0,
+      alive_user_count: 0,
+      alive_device_count: 0,
+      online_device_count: 0,
       user_list: [],
       device_list: []
     }
@@ -83,7 +88,19 @@ export function getData() {
           name: "用户人数",
           value: data.data.user_count,
           percent: "+" + data.data.add_user_count.toString(),
-          data: data.data.user_list.map(item => item.total_count)
+          data: data.data.user_list.slice(23, 30).map(item => item.total_count)
+        },
+        {
+          icon: Smile,
+          bgColor: "#f6f4fe",
+          color: "#7846e5",
+          duration: 50,
+          name: "活跃用户数",
+          value: data.data.alive_user_count,
+          percent: "",
+          data: [
+            parseInt((data.data.alive_user_count / data.data.user_count) * 100)
+          ]
         },
         {
           icon: Question,
@@ -93,37 +110,79 @@ export function getData() {
           name: "设备数量",
           value: data.data.device_count,
           percent: "+" + data.data.add_device_count.toString(),
-          data: data.data.device_list.map(item => item.total_count)
+          data: data.data.device_list
+            .slice(23, 30)
+            .map(item => item.total_count)
         },
         {
-          icon: GroupLine,
-          bgColor: "#effaff",
-          color: "#41b6ff",
+          icon: CheckLine,
+          bgColor: "#f6f4fe",
+          color: "#26ce83",
           duration: 2200,
-          name: "用户人数",
-          value: data.data.user_count,
-          percent: "+" + data.data.add_user_count.toString(),
-          data: data.data.user_list.map(item => item.total_count)
+          name: "活跃设备数",
+          value: data.data.alive_device_count,
+          percent: "",
+          data: [
+            parseInt(
+              (data.data.alive_device_count / data.data.device_count) * 100
+            )
+          ]
         },
         {
           icon: Question,
           bgColor: "#fff5f4",
           color: "#e85f33",
           duration: 1600,
-          name: "设备数量",
-          value: data.data.device_count,
-          percent: "+" + data.data.add_device_count.toString(),
-          data: data.data.device_list.map(item => item.total_count)
+          name: "在线设备数",
+          value: data.data.online_device_count,
+          percent: "",
+          data: [
+            parseInt(
+              (data.data.online_device_count / data.data.device_count) * 100
+            )
+          ]
+        },
+        {
+          icon: CheckLine,
+          bgColor: "#eff8f4",
+          color: "#26ce83",
+          duration: 1500,
+          name: "解决数量",
+          value: 16499,
+          percent: "+99%",
+          data: [861, 1002, 3195, 1715, 3666, 2415, 3645]
+        },
+        {
+          icon: CheckLine,
+          bgColor: "#eff8f4",
+          color: "#26ce83",
+          duration: 1500,
+          name: "解决数量",
+          value: 16499,
+          percent: "+99%",
+          data: [861, 1002, 3195, 1715, 3666, 2415, 3645]
+        },
+        {
+          icon: Smile,
+          bgColor: "#f6f4fe",
+          color: "#7846e5",
+          duration: 100,
+          name: "用户满意度",
+          value: 100,
+          percent: "+100%",
+          data: [100]
         }
       ];
       transformedData.flat(Infinity).forEach(item => {
         dataList.value.push(item);
       });
+      userLoginList.value = data.data.user_list;
+      userRegisterList.value = data.data.device_list;
       // dataList.value.push(item);
       // dataList.value.push(item);
     })
     .catch(error => {
       console.log(error);
     });
-  return { qidiData, receivedata, dataList };
+  return { qidiData, receivedata, dataList, userLoginList, userRegisterList };
 }

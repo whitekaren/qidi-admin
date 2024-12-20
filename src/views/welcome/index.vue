@@ -9,7 +9,7 @@ import { ChartBar, ChartLine, ChartRound } from "./components/charts";
 import Segmented, { type OptionsType } from "@/components/ReSegmented";
 import { barChartData, progressData, latestNewsData } from "./data";
 
-const { dataList } = getData();
+const { dataList, userLoginList, userRegisterList } = getData();
 
 defineOptions({
   name: "Welcome"
@@ -20,10 +20,10 @@ const { isDark } = useDark();
 let curWeek = ref(1); // 0上周、1本周
 const optionsBasis: Array<OptionsType> = [
   {
-    label: "上周"
+    label: "设备"
   },
   {
-    label: "本周"
+    label: "用户"
   }
 ];
 </script>
@@ -86,7 +86,12 @@ const optionsBasis: Array<OptionsType> = [
               :color="item.color"
               :data="item.data"
             />
-            <ChartRound v-else class="!w-1/2" />
+            <ChartRound
+              v-else
+              class="!w-1/2"
+              :color="item.color"
+              :data="item.data"
+            />
           </div>
         </el-card>
       </re-col>
@@ -115,7 +120,7 @@ const optionsBasis: Array<OptionsType> = [
           </div>
           <div class="flex justify-between items-start mt-3">
             <ChartBar
-              :requireData="barChartData[curWeek].requireData"
+              :showData="curWeek ? userLoginList : userRegisterList"
               :questionData="barChartData[curWeek].questionData"
             />
           </div>
@@ -140,6 +145,37 @@ const optionsBasis: Array<OptionsType> = [
         }"
       >
         <el-card shadow="never">
+          <div class="flex justify-between">
+            <span class="text-md font-medium">最新动态</span>
+          </div>
+          <el-scrollbar max-height="370" class="mt-3">
+            <el-timeline>
+              <el-timeline-item
+                v-for="(item, index) in latestNewsData"
+                :key="index"
+                center
+                placement="top"
+                :icon="
+                  markRaw(
+                    useRenderFlicker({
+                      background: randomGradient({
+                        randomizeHue: true
+                      })
+                    })
+                  )
+                "
+                :timestamp="item.date"
+              >
+                <p class="text-text_color_regular text-sm">
+                  {{
+                    `新增 ${item.requiredNumber} 条问题，${item.resolveNumber} 条已解决`
+                  }}
+                </p>
+              </el-timeline-item>
+            </el-timeline>
+          </el-scrollbar>
+        </el-card>
+        <!-- <el-card shadow="never">
           <div class="flex justify-between">
             <span class="text-md font-medium">解决概率</span>
           </div>
@@ -166,10 +202,10 @@ const optionsBasis: Array<OptionsType> = [
               {{ item.week }}
             </span>
           </div>
-        </el-card>
+        </el-card> -->
       </re-col>
 
-      <re-col
+      <!-- <re-col
         v-motion
         class="mb-[18px]"
         :value="18"
@@ -192,9 +228,9 @@ const optionsBasis: Array<OptionsType> = [
           </div>
           <WelcomeTable class="mt-3" />
         </el-card>
-      </re-col>
+      </re-col> -->
 
-      <re-col
+      <!-- <re-col
         v-motion
         class="mb-[18px]"
         :value="6"
@@ -242,7 +278,7 @@ const optionsBasis: Array<OptionsType> = [
             </el-timeline>
           </el-scrollbar>
         </el-card>
-      </re-col>
+      </re-col> -->
     </el-row>
   </div>
 </template>

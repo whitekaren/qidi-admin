@@ -5,8 +5,11 @@ export type BoardResult = {
   data: {
     user_count: number;
     add_user_count: number;
+    alive_user_count: number;
     device_count: number;
     add_device_count: number;
+    alive_device_count: number;
+    online_device_count: number;
     user_list: Array<CountList>;
     device_list: Array<CountList>;
   };

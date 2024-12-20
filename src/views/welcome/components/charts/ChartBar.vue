@@ -1,34 +1,33 @@
-<script setup lang="ts">
-import { useDark, useECharts } from "@pureadmin/utils";
-import { type PropType, ref, computed, watch, nextTick } from "vue";
+<script lang="ts" setup>
+import { getKeyList, useDark, useECharts, useGlobal } from "@pureadmin/utils";
+import { computed, nextTick, type PropType, ref, watch } from "vue";
 
 const props = defineProps({
-  requireData: {
+  showData: {
     type: Array as PropType<Array<number>>,
     default: () => []
   },
-  questionData: {
-    type: Array as PropType<Array<number>>,
-    default: () => []
+  title: {
+    type: String,
+    default: ""
   }
 });
 
 const { isDark } = useDark();
 
 const theme = computed(() => (isDark.value ? "dark" : "light"));
-
+const { $echarts } = useGlobal<GlobalPropertiesApi>();
 const chartRef = ref();
 const { setOptions } = useECharts(chartRef, {
   theme
 });
-
 watch(
   () => props,
   async () => {
     await nextTick(); // 确保DOM更新完成后再执行
+    const color = ["#41b6ff", "#26ce83"][props.title === "注册" ? 0 : 1];
     setOptions({
       container: ".bar-card",
-      color: ["#41b6ff", "#e85f33"],
       tooltip: {
         trigger: "axis",
         axisPointer: {
@@ -40,18 +39,26 @@ watch(
         left: "50px",
         right: 0
       },
-      legend: {
-        data: ["需求人数", "提问数量"],
-        textStyle: {
-          color: "#606266",
-          fontSize: "0.875rem"
+      dataZoom: [
+        {
+          show: true,
+          realtime: true,
+          start: 50,
+          end: 100,
+          xAxisIndex: [0, 1]
         },
-        bottom: 0
-      },
+        {
+          type: "inside",
+          realtime: true,
+          start: 50,
+          end: 100,
+          xAxisIndex: [0, 1]
+        }
+      ],
       xAxis: [
         {
           type: "category",
-          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+          data: getKeyList(props.showData, "time", false),
           axisLabel: {
             fontSize: "0.875rem"
           },
@@ -67,31 +74,37 @@ watch(
             fontSize: "0.875rem"
           },
           splitLine: {
-            show: false // 去网格线
+            show: true // 去网格线
           }
           // name: "单位: 个"
         }
       ],
       series: [
         {
-          name: "需求人数",
-          type: "bar",
-          barWidth: 10,
+          name: `${props.title}人数`,
+          type: "line",
+          smooth: true,
+          symbolSize: 8,
           itemStyle: {
-            color: "#41b6ff",
+            color: color,
             borderRadius: [10, 10, 0, 0]
           },
-          data: props.requireData
-        },
-        {
-          name: "提问数量",
-          type: "bar",
-          barWidth: 10,
-          itemStyle: {
-            color: "#e86033ce",
-            borderRadius: [10, 10, 0, 0]
-          },
-          data: props.questionData
+          data: getKeyList(props.showData, "total_count", false),
+          areaStyle: {
+            shadowColor: "rgb(209,239,225)",
+            shadowBlur: 10,
+            opacity: 0.3,
+            color: new $echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: color
+              },
+              {
+                offset: 1,
+                color: "rgb(255,255,255)"
+              }
+            ])
+          }
         }
       ]
     });
@@ -104,5 +117,5 @@ watch(
 </script>
 
 <template>
-  <div ref="chartRef" style="width: 100%; height: 365px" />
+  <div ref="chartRef" style="width: 100%; height: 400px" />
 </template>

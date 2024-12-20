@@ -1,10 +1,21 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { type PropType, ref, computed } from "vue";
 import { useDark, useECharts } from "@pureadmin/utils";
 
 const { isDark } = useDark();
 
 const theme = computed(() => (isDark.value ? "dark" : "light"));
+
+const props = defineProps({
+  data: {
+    type: Array as PropType<Array<number>>,
+    default: () => []
+  },
+  color: {
+    type: String,
+    default: "#41b6ff"
+  }
+});
 
 const chartRef = ref();
 const { setOptions } = useECharts(chartRef, {
@@ -15,7 +26,7 @@ const { setOptions } = useECharts(chartRef, {
 setOptions({
   container: ".line-card",
   title: {
-    text: "100%",
+    text: props.data[0].toString() + "%",
     left: "47%",
     top: "30%",
     textAlign: "center",
@@ -54,12 +65,12 @@ setOptions({
       backgroundStyle: {
         color: "#dfe7ef"
       },
-      data: [100],
+      data: props.data,
       coordinateSystem: "polar",
-      color: "#7846e5",
+      color: props.color,
       itemStyle: {
         shadowBlur: 2,
-        shadowColor: "#7846e5",
+        shadowColor: "props.color",
         shadowOffsetX: 0,
         shadowOffsetY: 0
       }
