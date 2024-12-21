@@ -3,6 +3,7 @@ import GroupLine from "@iconify-icons/ri/group-line";
 import Question from "@iconify-icons/ri/question-answer-line";
 import CheckLine from "@iconify-icons/ri/chat-check-line";
 import Smile from "@iconify-icons/ri/star-smile-line";
+
 import { getBoard, type BoardResult } from "@/api/board";
 
 const days = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];

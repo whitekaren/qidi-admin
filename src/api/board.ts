@@ -10,6 +10,10 @@ export type BoardResult = {
     add_device_count: number;
     alive_device_count: number;
     online_device_count: number;
+    frpcount: number;
+    frpYesterdayCount: number;
+    totalTrafficIn: number;
+    totalTrafficOut: number;
     user_list: Array<CountList>;
     device_list: Array<CountList>;
   };

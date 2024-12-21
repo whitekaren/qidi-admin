@@ -90,6 +90,8 @@ export type DeviceList = {
   created_at: Date;
   /** 更新时间 */
   updated_at: Date;
+  /** frp状态 */
+  proxy_status: string;
 };
 
 export const getUserList = (params?: object) => {

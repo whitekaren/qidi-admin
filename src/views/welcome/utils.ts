@@ -6,13 +6,16 @@ import GroupLine from "@iconify-icons/ri/group-line";
 import Question from "@iconify-icons/ri/question-answer-line";
 import CheckLine from "@iconify-icons/ri/chat-check-line";
 import Smile from "@iconify-icons/ri/star-smile-line";
+import device from "@iconify-icons/ri/hearts-line";
+import thumb from "@iconify-icons/ri/thumb-up-line";
 
 export function getRandomIntBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export function getData() {
-  const dataList = ref([]);
+  const userList = ref([]);
+  const deviceList = ref([]);
   const userLoginList = ref([]);
   const userRegisterList = ref([]);
 
@@ -26,6 +29,10 @@ export function getData() {
       alive_user_count: 0,
       alive_device_count: 0,
       online_device_count: 0,
+      frpcount: 0,
+      frpYesterdayCount: 0,
+      totalTrafficIn: 0,
+      totalTrafficOut: 0,
       user_list: [],
       device_list: []
     }
@@ -63,7 +70,7 @@ export function getData() {
       data: [861, 1002, 3195, 1715, 3666, 2415, 3645]
     },
     {
-      icon: Smile,
+      icon: device,
       bgColor: "#f6f4fe",
       color: "#7846e5",
       duration: 100,
@@ -73,7 +80,7 @@ export function getData() {
       data: [100]
     }
   ];
-  dataList.value = [];
+  userList.value = [];
   getBoard()
     .then(data => {
       console.log(data.data.user_count);
@@ -102,6 +109,33 @@ export function getData() {
             parseInt((data.data.alive_user_count / data.data.user_count) * 100)
           ]
         },
+        {
+          icon: device,
+          bgColor: "#f6f4fe",
+          color: "#7846e5",
+          duration: 100,
+          name: "Frp连接数",
+          value: data.data.frpcount,
+          percent:
+            data.data.frpcount - data.data.frpYesterdayCount > 0
+              ? "+" +
+                parseInt(
+                  ((data.data.frpcount - data.data.frpYesterdayCount) /
+                    data.data.frpYesterdayCount) *
+                    100
+                ).toString() +
+                "%"
+              : "-" +
+                parseInt(
+                  ((data.data.frpcount - data.data.frpYesterdayCount) /
+                    data.data.frpYesterdayCount) *
+                    100
+                ).toString() +
+                "%",
+          data: [parseInt((data.data.frpcount / data.data.device_count) * 100)]
+        }
+      ];
+      const transformedData2 = [
         {
           icon: Question,
           bgColor: "#fff5f4",
@@ -143,46 +177,36 @@ export function getData() {
           ]
         },
         {
-          icon: CheckLine,
+          icon: thumb,
           bgColor: "#eff8f4",
           color: "#26ce83",
           duration: 1500,
-          name: "解决数量",
-          value: 16499,
-          percent: "+99%",
+          name: "Frp出站流量",
+          value: data.data.totalTrafficOut / 2147483648,
+          percent:
+            "▲ " +
+            (data.data.totalTrafficIn / 2147483648).toFixed(2).toString(),
           data: [861, 1002, 3195, 1715, 3666, 2415, 3645]
-        },
-        {
-          icon: CheckLine,
-          bgColor: "#eff8f4",
-          color: "#26ce83",
-          duration: 1500,
-          name: "解决数量",
-          value: 16499,
-          percent: "+99%",
-          data: [861, 1002, 3195, 1715, 3666, 2415, 3645]
-        },
-        {
-          icon: Smile,
-          bgColor: "#f6f4fe",
-          color: "#7846e5",
-          duration: 100,
-          name: "用户满意度",
-          value: 100,
-          percent: "+100%",
-          data: [100]
         }
       ];
       transformedData.flat(Infinity).forEach(item => {
-        dataList.value.push(item);
+        userList.value.push(item);
+      });
+      transformedData2.flat(Infinity).forEach(item => {
+        deviceList.value.push(item);
       });
       userLoginList.value = data.data.user_list;
       userRegisterList.value = data.data.device_list;
-      // dataList.value.push(item);
-      // dataList.value.push(item);
     })
     .catch(error => {
       console.log(error);
     });
-  return { qidiData, receivedata, dataList, userLoginList, userRegisterList };
+  return {
+    qidiData,
+    receivedata,
+    userList,
+    deviceList,
+    userLoginList,
+    userRegisterList
+  };
 }

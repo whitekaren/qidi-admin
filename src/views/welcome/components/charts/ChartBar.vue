@@ -25,7 +25,7 @@ watch(
   () => props,
   async () => {
     await nextTick(); // 确保DOM更新完成后再执行
-    const color = ["#41b6ff", "#26ce83"][props.title === "注册" ? 0 : 1];
+    const color = ["#41b6ff", "#26ce83"][props.title === "设备" ? 0 : 1];
     setOptions({
       container: ".bar-card",
       tooltip: {
@@ -81,7 +81,7 @@ watch(
       ],
       series: [
         {
-          name: `${props.title}人数`,
+          name: `新增${props.title}${props.title === "设备" ? "台数" : "人数"}`,
           type: "line",
           smooth: true,
           symbolSize: 8,

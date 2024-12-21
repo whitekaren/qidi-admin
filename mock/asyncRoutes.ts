@@ -56,6 +56,34 @@ import { system } from "@/router/enums";
 //     }
 //   ]
 // };
+const ListManagementRouter = {
+  path: "/list",
+  meta: {
+    icon: "ri:table-line",
+    title: "列表",
+    rank: system
+  },
+  children: [
+    {
+      path: "/list/userlist/index",
+      name: "UserList",
+      meta: {
+        icon: "memory:account",
+        title: "用户列表",
+        roles: ["101"]
+      }
+    },
+    {
+      path: "/list/devicelist/index",
+      name: "DeviceList",
+      meta: {
+        icon: "eos-icons:3d-print",
+        title: "设备列表",
+        roles: ["102"]
+      }
+    }
+  ]
+};
 
 const systemManagementRouter = {
   path: "/system",
@@ -111,7 +139,7 @@ export default defineFakeRoute([
     response: () => {
       return {
         success: true,
-        data: [systemManagementRouter]
+        data: [ListManagementRouter, systemManagementRouter]
       };
     }
   }

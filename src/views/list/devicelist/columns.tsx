@@ -174,7 +174,7 @@ export function useColumns() {
     //   prop: "url"
     // },
     {
-      label: "状态",
+      label: "设备状态",
       prop: "device_status",
       cellRenderer: ({ row }) => (
         <>
@@ -182,6 +182,41 @@ export function useColumns() {
             <el-tag type="danger">offline</el-tag>
           ) : (
             <el-tag type="success">{row.device_status}</el-tag>
+          )}
+        </>
+      )
+    },
+    {
+      label: "frp状态",
+      prop: "proxy_status",
+      cellRenderer: ({ row }) => (
+        <>
+          {row.proxy_status === "offline" || row.proxy_status === null ? (
+            <el-tag type="danger">offline</el-tag>
+          ) : (
+            <el-tag type="success">{row.proxy_status}</el-tag>
+          )}
+        </>
+      )
+    },
+    {
+      label: "frp流量",
+      prop: "proxy_traffic",
+      cellRenderer: ({ row }) => (
+        <>
+          {row.today_traffic_in === 0 || row.today_traffic_in === null ? (
+            <el-tag type="danger"> 0 MB</el-tag>
+          ) : (
+            <el-tag type="primary">
+              {(row.today_traffic_in / 1048576).toFixed(2)} MB
+            </el-tag>
+          )}
+          {row.today_traffic_out === 0 || row.today_traffic_out === null ? (
+            <el-tag type="danger"> 0 MB</el-tag>
+          ) : (
+            <el-tag type="success">
+              {(row.today_traffic_out / 1048576).toFixed(2)} MB
+            </el-tag>
           )}
         </>
       )
