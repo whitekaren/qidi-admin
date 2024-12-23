@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, markRaw } from "vue";
+import { ref, computed, markRaw } from "vue";
 import ReCol from "@/components/ReCol";
 import { useDark, randomGradient, getData } from "./utils";
 import WelcomeTable from "./components/table/index.vue";
@@ -21,22 +21,18 @@ defineOptions({
 });
 
 const { isDark } = useDark();
-function getTitle() {
-  if (typeof this.optionsBasis[this.curWeek].label === "function") {
-    return this.optionsBasis[this.curWeek].label();
-  } else {
-    return this.optionsBasis[this.curWeek].label;
-  }
-}
+
 let curWeek = ref(1); // 0上周、1本周
-const optionsBasis: Array<OptionsType> = [
-  {
-    label: "设备"
-  },
-  {
-    label: "用户"
-  }
-];
+const optionsBasis = computed(() => {
+  return [
+    {
+      label: "设备"
+    },
+    {
+      label: "用户"
+    }
+  ];
+});
 </script>
 
 <template>
@@ -222,7 +218,7 @@ const optionsBasis: Array<OptionsType> = [
           <div class="flex justify-between items-start mt-3">
             <ChartBar
               :showData="curWeek ? userLoginList : userRegisterList"
-              :title="getTitle()"
+              :title="optionsBasis[curWeek].label"
             />
           </div>
         </el-card>
