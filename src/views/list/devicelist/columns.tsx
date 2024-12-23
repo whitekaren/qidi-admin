@@ -266,9 +266,9 @@ export function useColumns() {
 
   /** 分页配置 */
   const pagination = reactive<PaginationProps>({
-    pageSize: 15,
+    pageSize: 10,
     currentPage: 1,
-    pageSizes: [15, 20, 30, 40, 50, 100],
+    pageSizes: [10, 20, 30, 40, 50, 100],
     total: 0,
     align: "right",
     background: true,

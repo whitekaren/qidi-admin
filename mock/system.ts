@@ -197,23 +197,48 @@ export default defineFakeRoute([
             parent_id: 0,
             id: 200,
             menuType: 0,
-            title: "系统管理"
+            title: "外部页面"
           },
           {
             parent_id: 200,
             id: 201,
             menuType: 0,
-            title: "用户管理"
+            title: "showDoc"
           },
           {
             parent_id: 200,
             id: 202,
             menuType: 0,
-            title: "角色管理"
+            title: "阿里云Frp面板"
           },
           {
             parent_id: 200,
             id: 203,
+            menuType: 0,
+            title: "亚马逊Frp面板"
+          },
+          // 系统管理
+          {
+            parent_id: 0,
+            id: 300,
+            menuType: 0,
+            title: "系统管理"
+          },
+          {
+            parent_id: 300,
+            id: 301,
+            menuType: 0,
+            title: "用户管理"
+          },
+          {
+            parent_id: 300,
+            id: 302,
+            menuType: 0,
+            title: "角色管理"
+          },
+          {
+            parent_id: 300,
+            id: 303,
             menuType: 0,
             title: "部门管理"
           }

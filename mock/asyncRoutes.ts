@@ -1,6 +1,6 @@
 // 模拟后端动态生成路由
 import { defineFakeRoute } from "vite-plugin-fake-server/client";
-import { system } from "@/router/enums";
+// import { system } from "@/router/enums";
 
 /**
  * roles：页面级别权限，这里模拟二种 "admin"、"common"
@@ -56,12 +56,57 @@ import { system } from "@/router/enums";
 //     }
 //   ]
 // };
+
+const frameRouter = {
+  path: "/iframe",
+  meta: {
+    icon: "ri:links-fill",
+    title: "外部页面",
+    rank: 2
+  },
+  children: [
+    {
+      path: "/iframe/showDoc",
+      name: "showDoc",
+      meta: {
+        icon: "radix-icons:file-text",
+        title: "showDoc",
+        frameSrc: "http://47.120.29.134:4999",
+        keepAlive: true,
+        roles: ["201"]
+      }
+    },
+    {
+      path: "/iframe/frp_dashboard_aliyun",
+      name: "frp_dashboard_aliyun",
+      meta: {
+        icon: "material-symbols:dashboard",
+        title: "阿里云Frp面板",
+        frameSrc: "http://120.55.71.36:7660/",
+        keepAlive: true,
+        roles: ["202"]
+      }
+    },
+    {
+      path: "/iframe/frp_dashboard_aws",
+      name: "frp_dashboard_aws",
+      meta: {
+        icon: "material-symbols:dashboard",
+        title: "亚马逊Frp面板",
+        frameSrc: "http://54.68.120.215:7660/",
+        keepAlive: true,
+        roles: ["203"]
+      }
+    }
+  ]
+};
+
 const ListManagementRouter = {
   path: "/list",
   meta: {
     icon: "ri:table-line",
     title: "列表",
-    rank: system
+    rank: 1
   },
   children: [
     {
@@ -90,7 +135,7 @@ const systemManagementRouter = {
   meta: {
     icon: "ri:settings-3-line",
     title: "系统管理",
-    rank: system
+    rank: 3
   },
   children: [
     {
@@ -99,7 +144,7 @@ const systemManagementRouter = {
       meta: {
         icon: "ri:admin-line",
         title: "用户管理",
-        roles: ["201"]
+        roles: ["301"]
       }
     },
     {
@@ -108,7 +153,7 @@ const systemManagementRouter = {
       meta: {
         icon: "ri:admin-fill",
         title: "角色管理",
-        roles: ["202"]
+        roles: ["302"]
       }
     },
     // {
@@ -126,7 +171,7 @@ const systemManagementRouter = {
       meta: {
         icon: "ri:git-branch-line",
         title: "部门管理",
-        roles: ["203"]
+        roles: ["303"]
       }
     }
   ]
@@ -139,7 +184,7 @@ export default defineFakeRoute([
     response: () => {
       return {
         success: true,
-        data: [ListManagementRouter, systemManagementRouter]
+        data: [ListManagementRouter, frameRouter, systemManagementRouter]
       };
     }
   }
