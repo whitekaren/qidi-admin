@@ -241,6 +241,18 @@ export default defineFakeRoute([
             id: 303,
             menuType: 0,
             title: "部门管理"
+          },
+          {
+            parent_id: 0,
+            id: 400,
+            menuType: 0,
+            title: "消息"
+          },
+          {
+            parent_id: 400,
+            id: 401,
+            menuType: 0,
+            title: "消息编辑"
           }
         ]
       };

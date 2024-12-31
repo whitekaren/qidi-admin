@@ -130,12 +130,32 @@ const ListManagementRouter = {
   ]
 };
 
+const messageEditRouter = {
+  path: "/message",
+  meta: {
+    icon: "ep:edit",
+    title: "系统管理",
+    rank: 3
+  },
+  children: [
+    {
+      path: "/message/index",
+      name: "message",
+      meta: {
+        icon: "ep:edit",
+        title: "消息",
+        roles: ["401"]
+      }
+    }
+  ]
+};
+
 const systemManagementRouter = {
   path: "/system",
   meta: {
     icon: "ri:settings-3-line",
     title: "系统管理",
-    rank: 3
+    rank: 4
   },
   children: [
     {
@@ -184,7 +204,12 @@ export default defineFakeRoute([
     response: () => {
       return {
         success: true,
-        data: [ListManagementRouter, frameRouter, systemManagementRouter]
+        data: [
+          ListManagementRouter,
+          frameRouter,
+          systemManagementRouter,
+          messageEditRouter
+        ]
       };
     }
   }
