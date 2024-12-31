@@ -36,7 +36,7 @@ type editMessageResult = {
 
 export const getMessageList = (params?: object) => {
   return http
-    .request<MessageListResult>("get", "/qidi/common/newMessageList", {
+    .request<MessageListResult>("get", "/qidi/admin/newMessageList", {
       params
     })
     .then(response => {
